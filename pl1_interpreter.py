@@ -52,7 +52,7 @@ class Interpreter(NodeVisitor):
 			if defined:
 				return (defined, value, -x,)
 		
-		raise "Undefined name referenced: " + `node`
+		raise NameError("Undefined name referenced: " + `name`)
 	
 	def evaluate(self, node):
 		self.push()
@@ -107,6 +107,8 @@ class Interpreter(NodeVisitor):
 			return lhs[1] >= rhs[1]
 		if operator == 'EQ':
 			return lhs[1] == rhs[1]
+		
+		raise ArithmeticError("Unknown comparison operator " + operator)
 	
 	def accept_number(self, node):
 		return node[1]
@@ -120,9 +122,8 @@ class Interpreter(NodeVisitor):
 		defined, value, level = self.find(node[1])
 		
 		if defined != 'PROCEDURE':
-			raise "Expecting procedure but got: " + defined
+			raise NameError("Expecting procedure but got: " + defined)
 		
-		print "Calling " + node[1]
 		block, result = self.evaluate(value.node)
 		return result
 	
