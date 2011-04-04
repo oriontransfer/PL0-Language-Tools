@@ -240,8 +240,8 @@ class Parser(SymbolParser):
 			self.get_sym()
 			condition = self.p_condition()
 			
-			self.get_sym()
 			self.expect_sym('THEN')
+			self.get_sym()
 			
 			statement = self.p_statement()
 			
