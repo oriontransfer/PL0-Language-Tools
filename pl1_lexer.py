@@ -50,6 +50,11 @@ def t_newline(t):
 	r'\n+'
 	t.lexer.lineno += len(t.value)
 
+def t_COMMENT(t):
+	r'\#.*'
+	# No return value. Token discarded
+	pass
+
 t_DOT = r'\.'
 t_EOS = r';'
 
