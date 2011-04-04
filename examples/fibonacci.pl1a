@@ -1,3 +1,6 @@
+# This hand-written assembly program calculates the first K values of the fibonacci sequence.
+# Initially, the memory address count: contains K.
+
 # Firstly we JMP to main, because the execution starts at offset 0
 	JMP main
 # This contains f[n]
