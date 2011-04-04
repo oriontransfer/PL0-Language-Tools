@@ -123,7 +123,6 @@ class Compiler(NodeVisitor):
 		condition = node[1]
 		loop = node[2]
 		
-		print '#' + `condition`
 		print top_label + ":"
 		# Result of condition is on top of stack
 		NodeVisitor.visit_node(self, condition)
@@ -141,7 +140,6 @@ class Compiler(NodeVisitor):
 		condition = node[1]
 		body = node[2]
 		
-		print '#' + `condition`
 		NodeVisitor.visit_node(self, condition)
 		
 		print "\tJE " + false_label
@@ -162,7 +160,6 @@ class Compiler(NodeVisitor):
 	
 	def accept_set(self, node):
 		name = node[1][1]
-		print '#' + `node`
 		
 		NodeVisitor.visit_node(self, node[2])
 		
