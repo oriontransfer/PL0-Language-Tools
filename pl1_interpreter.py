@@ -92,6 +92,15 @@ class Interpreter(NodeVisitor):
 			
 			self.evaluate(loop)
 	
+	def accept_if(self, node):
+		condition = node[1]
+		body = node[2]
+		
+		block, result = self.evaluate(condition)
+		
+		if result:
+			self.evaluate(body)
+	
 	def accept_condition(self, node):
 		operator = node[2]
 		lhs = self.evaluate(node[1])
