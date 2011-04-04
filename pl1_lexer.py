@@ -41,7 +41,8 @@ t_ignore = ' \t'
 def t_NAME(t):
 	r'[a-zA-Z_][a-zA-Z0-9_]*'
 	
-	if t.value in keywords:
+	if t.value.upper() in keywords:
+		t.value = t.value.upper()
 		t.type = t.value
 	
 	return t
