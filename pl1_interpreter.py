@@ -69,6 +69,10 @@ class Interpreter(NodeVisitor):
 		for var in node[1:]:
 			self.stack[-1].update(var[1], 0)
 	
+	def accept_constants(self, node):
+		for var in node[1:]:
+			self.stack[-1].define(var[1], var[2])
+	
 	def accept_procedures(self, node):
 		for proc in node[1:]:
 			self.stack[-1].procedures[proc[1]] = Procedure(proc[1], proc[2], self.stack[-1])
