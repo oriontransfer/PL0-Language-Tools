@@ -1,0 +1,9 @@
+# This program tests if statements and constants.
+
+CONST X = 20;
+
+BEGIN
+	IF X >= 10 THEN ! 10;
+	IF X >= 20 THEN ! 20;
+	IF X >= 30 THEN ! 30
+END.
