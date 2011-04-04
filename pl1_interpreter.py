@@ -46,7 +46,7 @@ class Interpreter(NodeVisitor):
 		self.stack = []
 	
 	def find(self, name):
-		for x in range(0, len(self.stack)):
+		for x in range(1, len(self.stack) + 1):
 			defined, value = self.stack[-x].lookup(name)
 			
 			if defined:
