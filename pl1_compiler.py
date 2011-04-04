@@ -45,13 +45,13 @@ class Compiler(NodeVisitor):
 		return 't_' + hint + '_' + `self.label_id`
 	
 	def find(self, name):
-		for x in range(0, len(self.stack)):
+		for x in range(1, len(self.stack) + 1):
 			defined, value = self.stack[-x].lookup(name)
 			
 			if defined:
 				return (defined, value, -x,)
 		
-		raise "Undefined name referenced: " + `node`
+		raise NameError("Undefined name referenced: " + `name`)
 	
 	def generate(self, node):
 		self.push()
@@ -66,8 +66,17 @@ class Compiler(NodeVisitor):
 	
 	def accept_variables(self, node):
 		for var in node[1:]:
-			print var[1] + ":"
-			print "	NOP"
+			# Allocate static storage space for the variable
+			unique_name = self.intermediate_label('var_' + var[1])
+			print unique_name + ":"
+			print "	0"
+			
+			# Save the unique name for loading this variable in the future.
+			self.stack[-1].update(var[1], unique_name)
+	
+	def accept_constants(self, node):
+		for var in node[1:]:
+			self.stack[-1].define(var[1], var[2])
 	
 	def accept_program(self, node):
 		print "JMP main"
@@ -77,6 +86,7 @@ class Compiler(NodeVisitor):
 		
 		print "main:"
 		NodeVisitor.visit_node(self, block[4])
+		print "\tHALT"
 	
 	def accept_while(self, node):
 		top_label = self.intermediate_label("while_start")
@@ -113,7 +123,13 @@ class Compiler(NodeVisitor):
 		
 		NodeVisitor.visit_node(self, node[2])
 		
-		print "\tSAVE " + node[1][1]
+		assign_to = node[1][1]
+		defined, value, level = self.find(assign_to)
+		
+		if defined != 'VARIABLE':
+			raise NameError("Invalid assignment to non-variable " + assign_to + " of type " + defined)
+		
+		print "\tSAVE " + value
 
 	def accept_term(self, node):
 		NodeVisitor.visit_node(self, node[1])
@@ -151,8 +167,14 @@ class Compiler(NodeVisitor):
 		print "\tPUSH " + `node[1]`
 
 	def accept_name(self, node):
-		# defined, value, level = self.find(node[1])
-		print "\tLOAD " + node[1]
+		defined, value, level = self.find(node[1])
+		
+		if defined == 'VARIABLE':
+			print "\tLOAD", value
+		elif defined == 'CONSTANT':
+			print "\tPUSH", value
+		else:
+			raise NameError("Invalid value name " + node[1] + " of type " + defined)
 		
 if __name__ == '__main__':
 	code = sys.stdin.read()
