@@ -108,11 +108,11 @@ class Interpreter(NodeVisitor):
 		
 		if operator == 'LT':
 			return lhs[1] < rhs[1]
-		if operator == 'LEQ':
+		if operator == 'LTE':
 			return lhs[1] <= rhs[1]
 		if operator == 'GT':
 			return lhs[1] > rhs[1]
-		if operator == 'GEQ':
+		if operator == 'GTE':
 			return lhs[1] >= rhs[1]
 		if operator == 'EQ':
 			return lhs[1] == rhs[1]
