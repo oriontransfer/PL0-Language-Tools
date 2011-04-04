@@ -107,6 +107,21 @@ class Compiler(NodeVisitor):
 		print "\tJMP " + top_label
 		print bottom_label + ":"
 	
+	def accept_if(self, node):
+		false_label = self.intermediate_label("if_false")
+		
+		condition = node[1]
+		body = node[2]
+		
+		print '#' + `condition`
+		NodeVisitor.visit_node(self, condition)
+		
+		print "\tJE " + false_label
+		
+		NodeVisitor.visit_node(self, body)
+		
+		print false_label + ":"
+	
 	def accept_condition(self, node):
 		operator = node[2]
 		lhs = node[1]
