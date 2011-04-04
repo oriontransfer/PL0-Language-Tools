@@ -19,6 +19,9 @@ class Block:
 	def update(self, name, value):
 		self.variables[name] = value
 	
+	def declare(self, name, value):
+		self.procedures[name] = value
+	
 	def debug(self):
 		print "-- Stack Frame --"
 		print "Constants: " + `self.constants`
@@ -66,17 +69,32 @@ class Compiler(NodeVisitor):
 	
 	def accept_variables(self, node):
 		for var in node[1:]:
-			# Allocate static storage space for the variable
-			unique_name = self.intermediate_label('var_' + var[1])
-			print unique_name + ":"
-			print "	0"
+			# Generate a unique name for the variable
+			variable_name = self.intermediate_label('var_' + var[1])
 			
 			# Save the unique name for loading this variable in the future.
-			self.stack[-1].update(var[1], unique_name)
+			self.stack[-1].update(var[1], variable_name)
+			
+			# Allocate static storage space for the variable
+			print variable_name + ":"
+			print "	0"
 	
 	def accept_constants(self, node):
 		for var in node[1:]:
 			self.stack[-1].define(var[1], var[2])
+	
+	def accept_procedures(self, node):
+		for proc in node[1:]:
+			# Generate a unique name for the procedure
+			proc_name = self.intermediate_label('proc_' + proc[1])
+			
+			# Save the unique procedure name on the lexical stack
+			self.stack[-1].declare(proc[1], proc_name)
+			
+			# Generate the code for the procedure
+			print proc_name + ":"
+			NodeVisitor.visit_node(self, proc[2])
+			print "\tRET"
 	
 	def accept_program(self, node):
 		print "JMP main"
@@ -145,6 +163,14 @@ class Compiler(NodeVisitor):
 			raise NameError("Invalid assignment to non-variable " + assign_to + " of type " + defined)
 		
 		print "\tSAVE " + value
+
+	def accept_call(self, node):
+		defined, value, level = self.find(node[1])
+		
+		if defined != 'PROCEDURE':
+			raise NameError("Expecting procedure but got: " + defined)
+		
+		print "\tCALL " + value
 
 	def accept_term(self, node):
 		NodeVisitor.visit_node(self, node[1])
