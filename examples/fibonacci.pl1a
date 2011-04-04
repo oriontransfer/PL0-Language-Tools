@@ -1,0 +1,30 @@
+# Firstly we JMP to main, because the execution starts at offset 0
+	JMP main
+# This contains f[n]
+m:
+	1
+# This contains f[n+1]
+n:
+	1
+
+# The number of iterations to calculate
+count:
+	20
+
+# The main function which is a loop to generate the next Fibonacci number.
+main:
+	LOAD m
+	PRINT
+	LOAD n
+	ADD
+	LOAD n
+	SAVE m
+	SAVE n
+
+# Decrement the counter
+	PUSH 1
+	LOAD count
+	SUB
+	DUP
+	SAVE count
+	JLT main

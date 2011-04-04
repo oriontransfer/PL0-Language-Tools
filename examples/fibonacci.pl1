@@ -1,0 +1,19 @@
+
+VAR m, n, k, count;
+
+BEGIN
+	m := 1;
+	n := 1;
+	count := 0;
+	
+	WHILE count <= 20 DO
+	BEGIN
+		k := n;
+		n := m + n;
+		m := k;
+		
+		! k;
+		
+		count := count + 1
+	END
+END.
