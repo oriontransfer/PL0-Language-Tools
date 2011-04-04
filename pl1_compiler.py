@@ -91,10 +91,20 @@ class Compiler(NodeVisitor):
 			# Save the unique procedure name on the lexical stack
 			self.stack[-1].declare(proc[1], proc_name)
 			
+			# Define a new lexical scope
+			self.push()
+			
+			# Generate any static storage required by the procedure
+			print "# Procedure " + proc[1]
+			NodeVisitor.visit_expressions(self, proc[2][1:3])
+			
 			# Generate the code for the procedure
 			print proc_name + ":"
-			NodeVisitor.visit_node(self, proc[2])
+			NodeVisitor.visit_node(self, proc[2][4])
 			print "\tRET"
+			
+			# Finished with lexical scope
+			self.pop()
 	
 	def accept_program(self, node):
 		print "JMP main"
