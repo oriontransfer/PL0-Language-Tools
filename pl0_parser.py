@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import sys
-import pl1_lexer
+import pl0_lexer
 
 class ParseError(Exception):
 	pass
@@ -64,7 +64,7 @@ class SymbolParser:
 
 class Parser(SymbolParser):
 	def __init__(self):
-		SymbolParser.__init__(self, pl1_lexer.create())
+		SymbolParser.__init__(self, pl0_lexer.create())
 
 	def p_program(self):
 		block = self.required(self.p_block(), 'block')

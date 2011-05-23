@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import pl1_machine
+import pl0_machine
 import sys
 import StringIO
 import re
@@ -38,8 +38,8 @@ def assemble(input):
 			for argument in command:
 				if is_integer(argument):
 					buffer.append(int(argument))
-				elif pl1_machine.OPCODES.has_key(argument):
-					buffer.append(pl1_machine.OPCODES[argument])
+				elif pl0_machine.OPCODES.has_key(argument):
+					buffer.append(pl0_machine.OPCODES[argument])
 				else:
 					# A label
 					buffer.append(argument)

@@ -1,5 +1,9 @@
-# PL/1 Language Tools #
+# PL/0 Language Tools #
 
-PL/1 is a slightly modified version of PL/0. This project is a set of tools designed for educational purposes to learn about compilers, interpreters and virtual machines. It includes a full stack of software required for these purposes, with each component able to be executed independently and typically between 100-300 lines of code.
+The PL/0 Language Tools serve as an example of how to construct a compiler. The language 'PL/0' was originally introduced in the book "Algorithms + Data Structures = Programs", by Niklaus Wirth in 1975.
 
-For more details including documentation please visit <http://www.oriontransfer.co.nz/research/pl1>.
+This project includes a full stack of tools designed for educational purposes to learn about compilers, interpreters and virtual machines. Each component can be executed independently and is typically between 100-300 lines of code.
+
+It is designed to be clear and concise at the expense of performance. It is easy to extend and modify, e.g. adding new syntax constructs or machine instructions.
+
+For more details including documentation please visit <http://www.oriontransfer.co.nz/learn/pl0-language-tools>.

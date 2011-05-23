@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-from pl1_node_visitor import *
+from pl0_node_visitor import *
 import sys
-import pl1_parser
+import pl0_parser
 import StringIO
 import os
 
@@ -226,7 +226,7 @@ class Compiler(NodeVisitor):
 		
 if __name__ == '__main__':
 	code = sys.stdin.read()
-	parser = pl1_parser.Parser()
+	parser = pl0_parser.Parser()
 	parser.input(code)
 	program = parser.p_program()
 
