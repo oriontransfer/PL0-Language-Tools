@@ -58,11 +58,10 @@ If you want to see a abstract syntax tree of your program, use the pl0_graphviz.
 
 	./pl0_graphviz.py < examples/fibonacci.pl1
 
-A sample graph is included in the [examples directory][1].
+A sample graph is included in the `examples` directory.
 
 For more advanced usage, including documentation on individual components, please see the [online documentation][2].
 
-[1]: <examples/fibonacci.pdf>
 [2]: http://www.oriontransfer.co.nz/learn/pl0-language-tools
 
 License
