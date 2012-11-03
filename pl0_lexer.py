@@ -45,37 +45,37 @@ import ply.lex as lex
 # factor = ident | number | "(" expression ")".
 
 keywords = [
-	'ODD', 'CALL', 'BEGIN', 'END', 'IF', 'THEN', 'WHILE', 'DO', 'CONST', 'VAR', 'PROCEDURE', 'WRITE', 'WRITELN'
+    'ODD', 'CALL', 'BEGIN', 'END', 'IF', 'THEN', 'WHILE', 'DO', 'CONST', 'VAR', 'PROCEDURE', 'WRITE', 'WRITELN'
 ]
 
 # Special variable named 'tokens'
 tokens = keywords + [
-	'DOT', 'EOS', 'UPDATE',
-	'COMMA', 'LPAREN', 'RPAREN',
-	'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'ASSIGN', 'PRINT',
-	'LT', 'LTE', 'GT', 'GTE', 'E', 'NE',
-	'NAME', 'NUMBER'
+    'DOT', 'EOS', 'UPDATE',
+    'COMMA', 'LPAREN', 'RPAREN',
+    'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'ASSIGN', 'PRINT',
+    'LT', 'LTE', 'GT', 'GTE', 'E', 'NE',
+    'NAME', 'NUMBER'
 ]
 
 t_ignore = ' \t'
 
 def t_NAME(t):
-	r'[a-zA-Z_][a-zA-Z0-9_]*'
-	
-	if t.value.upper() in keywords:
-		t.value = t.value.upper()
-		t.type = t.value
-	
-	return t
+    r'[a-zA-Z_][a-zA-Z0-9_]*'
+    
+    if t.value.upper() in keywords:
+        t.value = t.value.upper()
+        t.type = t.value
+    
+    return t
 
 def t_newline(t):
-	r'\n+'
-	t.lexer.lineno += len(t.value)
+    r'\n+'
+    t.lexer.lineno += len(t.value)
 
 def t_COMMENT(t):
-	r'\#.*'
-	# No return value. Token discarded
-	pass
+    r'\#.*'
+    # No return value. Token discarded
+    pass
 
 t_DOT = r'\.'
 t_EOS = r';'
@@ -102,11 +102,11 @@ t_ASSIGN = r'='
 t_PRINT = r'!'
 
 def t_NUMBER(t):
-	r'\d+'
-	
-	t.value = int(t.value)
-	
-	return t
+    r'\d+'
+    
+    t.value = int(t.value)
+    
+    return t
 
 # Error handling rule
 def t_error(t):
@@ -117,15 +117,15 @@ def t_error(t):
 lexer = lex.lex()
 
 def create():
-	return lexer.clone()
+    return lexer.clone()
 
 if __name__ == "__main__":
-	code = sys.stdin.read()
-	
-	lex.input(code)
+    code = sys.stdin.read()
+    
+    lex.input(code)
 
-	while True:
-		tok = lex.token()
-		if not tok: break
-	
-		print tok
+    while True:
+        tok = lex.token()
+        if not tok: break
+    
+        print tok

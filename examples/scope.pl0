@@ -3,13 +3,13 @@
 
 var x;
 procedure a;
-	var x;
-	begin
-		x := 2;
-		! x
-	end;
+    var x;
+    begin
+        x := 2;
+        ! x
+    end;
 begin
-	x := 10;
-	call a;
-	! x
+    x := 10;
+    call a;
+    ! x
 end.
