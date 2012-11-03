@@ -20,13 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
-
+
 import sys
 import pl0_lexer
-
+
 class ParseError(Exception):
     pass
-
+
 class SymbolParser:
     def __init__(self, lex):
         self.lex = lex
@@ -62,7 +62,7 @@ class SymbolParser:
             return result
         else:
             self.expect_sym("~%s" % name)
-
+
 # program = block "." .
 # 
 # block = [ "const" ident "=" number {"," ident "=" number} ";"]
@@ -82,8 +82,9 @@ class SymbolParser:
 # term = factor {("*"|"/") factor}.
 # 
 # factor = ident | number | "(" expression ")".
-
+
 class Parser(SymbolParser):
+
     def __init__(self):
         SymbolParser.__init__(self, pl0_lexer.create())
 
@@ -121,7 +122,7 @@ class Parser(SymbolParser):
                 self.expect_sym('COMMA')
         else:
             return None
-    
+
     def p_const_assign(self):
         if self.is_sym('NAME'):
             name = self.sym.value
@@ -158,7 +159,7 @@ class Parser(SymbolParser):
                 self.expect_sym('COMMA')
         else:
             return None
-    
+
     def p_procedures_decl(self):
         procedures = ['PROCEDURES']
         
@@ -183,7 +184,7 @@ class Parser(SymbolParser):
             return procedures
         else:
             return None
-    
+
     def p_statement(self):
         if self.is_sym('NAME'):
             return self.p_statement_assign()
@@ -200,7 +201,7 @@ class Parser(SymbolParser):
         else:
             # Raise an exception since we didn't find a valid statement.
             self.expect_sym('~statement')
-    
+
     def p_statement_assign(self):
         if self.is_sym('NAME'):
             name = ('NAME', self.sym.value,)
@@ -224,7 +225,7 @@ class Parser(SymbolParser):
             return ('PRINT', expression)
         else:
             return None
-    
+
     def p_statement_call(self):
         if self.is_sym('CALL'):
             self.get_sym('call-1')
@@ -255,7 +256,7 @@ class Parser(SymbolParser):
                 self.expect_sym('EOS')
         else:
             return None
-    
+
     def p_statement_if(self):
         if self.is_sym('IF'):
             self.get_sym()
@@ -284,7 +285,7 @@ class Parser(SymbolParser):
             return ('WHILE', condition, statement)
         else:
             return None
-    
+
     def p_condition(self):
         odd = False
         
@@ -315,7 +316,7 @@ class Parser(SymbolParser):
             return 'MINUS'
         else:
             return None
-    
+
     def p_expression(self):
         sign = self.p_term_op()
         
@@ -345,7 +346,7 @@ class Parser(SymbolParser):
             return 'DIVIDE'
         else:
             return None
-    
+
     def p_term(self):
         expression = ['TERM']
         lhs = self.required(self.p_factor(), 'lhs-factor')
@@ -379,7 +380,7 @@ class Parser(SymbolParser):
             
             self.get_sym()
             return expression
-
+
 def is_flat(tree):
     if tree == None:
         return False
@@ -404,7 +405,7 @@ def print_tree(tree, depth = 0):
         pass
     else:
         print "  " * depth + str(tree)
-
+
 if __name__ == "__main__":
     p = Parser()
     
