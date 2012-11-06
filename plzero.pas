@@ -1,3 +1,18 @@
+{
+  This is the original pascal code from the 1976 book,
+  Algorithms + Data Structures = Programs by Niklaus Wirth
+  
+  It was obtained from:
+  
+  http://www.moorecad.com/standardpascal/source.html
+
+  The following changes were made to get it to compile
+  with freepascal 2.7.1:
+
+  identifier 'object' renamed to obj;
+}
+{$mode iso}
+
 program pl0(input,output);
 {pl/0 compiler with code generation}
 label 99;
@@ -14,14 +29,14 @@ type symbol =
     period,becomes,beginsym,endsym,ifsym,thensym,
     whilesym,dosym,callsym,constsym,varsym,procsym);
     alfa = packed array [1..al] of char;
-    object = (constant,varible,proc);
+    obj = (constant,varible,proc);
     symset = set of symbol;
     fct = (lit,opr,lod,sto,cal,int,jmp,jpc);   {functions}
     instruction = packed record
                      f: fct;           {function code}
                      l: 0..levmax;     {level}
                      a: 0..amax        {displacement address}
-                  end;
+		  end;
 {   lit 0,a  :  load constant a
     opr 0,a  :  execute operation a
     lod l,a  :  load varible l,a
@@ -30,6 +45,7 @@ type symbol =
     int 0,a  :  increment t-register by a
     jmp 0,a  :  jump to a
     jpc 0,a  :  jump conditional to a   }
+
 var ch: char;         {last character read}
     sym: symbol;      {last symbol read}
     id: alfa;         {last identifier read}
@@ -49,14 +65,15 @@ var ch: char;         {last character read}
     declbegsys, statbegsys, facbegsys: symset;
     table: array [0..txmax] of
            record name: alfa;
-              case kind: object of
+              case kind: obj of
               constant: (val: integer);
               varible, proc: (level, adr: integer)
            end;
+
 procedure error(n: integer);
 begin writeln(' ****',' ': cc-1, '^',n: 2); err := err+1
 end {error};
- 
+
 procedure getsym;
    var i,j,k: integer;
  
@@ -109,7 +126,7 @@ begin {getsym}
    begin sym := ssym[ch]; getch
    end
 end {getsym};
- 
+
 procedure gen(x: fct; y,z: integer);
 begin if cx > cxmax then
            begin write(' program too long'); goto 99
@@ -126,13 +143,13 @@ begin if not(sym in s1) then
            while not(sym in s1) do getsym
         end
 end {test};
- 
+
 procedure block(lev,tx: integer; fsys: symset);
    var dx: integer;     {data allocation index}
       tx0: integer;     {initial table index}
       cx0: integer;     {initial code index}
-   procedure enter(k: object);
-   begin {enter object into table}
+   procedure enter(k: obj);
+   begin {enter obj into table}
       tx := tx + 1;
       with table[tx] do
       begin name := id; kind := k;
@@ -352,7 +369,7 @@ begin {block} dx:=3; tx0:=tx; table[tx].adr:=cx; gen(jmp,0,0);
    test(fsys, [], 8);
    listcode;
 end {block};
- 
+
 procedure interpret;
    const stacksize = 500;
    var p,b,t: integer; {program-, base-, topstack-registers}
@@ -418,7 +435,7 @@ begin writeln(' start pl/0');
    until p = 0;
    write(' end pl/0');
 end {interpret};
-
+
 begin {main program}
    for ch := chr(0) to chr(255) do ssym[ch] := nul;
    word[ 1] := 'begin     ';      word[ 2] := 'call      ';
@@ -448,7 +465,8 @@ begin {main program}
    declbegsys := [constsym, varsym, procsym];
    statbegsys := [beginsym, callsym, ifsym, whilesym];
    facbegsys  := [ident, number, lparen];
-   page(output); err := 0;
+   { page(output); } writeln( ^L );
+   err := 0;
    cc := 0; cx := 0; ll := 0; ch := ' '; kk := al; getsym;
    block(0, 0, [period]+declbegsys+statbegsys);
    if sym <> period then error(9);
