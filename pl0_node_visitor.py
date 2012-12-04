@@ -30,7 +30,7 @@ class NodeVisitor:
         except AttributeError:
             return self.accept_node(node)
         else:
-            return m(node)
+            return m(*node)
     
     def accept_node(self, node):
         return self.visit_expressions(node[1:])

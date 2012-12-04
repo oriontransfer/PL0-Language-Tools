@@ -89,7 +89,7 @@ class Compiler(NodeVisitor):
     def pop(self):
         return self.stack.pop()
 
-    def accept_variables(self, node):
+    def accept_variables(self, *node):
         for var in node[1:]:
             # Generate a unique name for the variable
             variable_name = self.intermediate_label('var_' + var[1])
@@ -101,11 +101,11 @@ class Compiler(NodeVisitor):
             print variable_name + ":"
             print "    0"
     
-    def accept_constants(self, node):
+    def accept_constants(self, *node):
         for var in node[1:]:
             self.stack[-1].define(var[1], var[2])
 
-    def accept_procedures(self, node):
+    def accept_procedures(self, *node):
         for proc in node[1:]:
             # Generate a unique name for the procedure
             proc_name = self.intermediate_label('proc_' + proc[1])
@@ -128,7 +128,7 @@ class Compiler(NodeVisitor):
             # Finished with lexical scope
             self.pop()
 
-    def accept_program(self, node):
+    def accept_program(self, *node):
         print "JMP main"
 
         block = node[1]
@@ -138,7 +138,7 @@ class Compiler(NodeVisitor):
         NodeVisitor.visit_node(self, block[4])
         print "\tHALT"
 
-    def accept_while(self, node):
+    def accept_while(self, *node):
         top_label = self.intermediate_label("while_start")
         bottom_label = self.intermediate_label("while_end")
 
@@ -156,7 +156,7 @@ class Compiler(NodeVisitor):
         print "\tJMP " + top_label
         print bottom_label + ":"
 
-    def accept_if(self, node):
+    def accept_if(self, *node):
         false_label = self.intermediate_label("if_false")
 
         condition = node[1]
@@ -170,7 +170,7 @@ class Compiler(NodeVisitor):
 
         print false_label + ":"
 
-    def accept_condition(self, node):
+    def accept_condition(self, *node):
         operator = node[2]
         lhs = node[1]
         rhs = node[3]
@@ -180,7 +180,7 @@ class Compiler(NodeVisitor):
 
         print "\tCMP" + operator
 
-    def accept_set(self, node):
+    def accept_set(self, *node):
         name = node[1][1]
 
         NodeVisitor.visit_node(self, node[2])
@@ -193,7 +193,7 @@ class Compiler(NodeVisitor):
 
         print "\tSAVE " + value
 
-    def accept_call(self, node):
+    def accept_call(self, *node):
         defined, value, level = self.find(node[1])
 
         if defined != 'PROCEDURE':
@@ -201,7 +201,7 @@ class Compiler(NodeVisitor):
 
         print "\tCALL " + value
 
-    def accept_term(self, node):
+    def accept_term(self, *node):
         NodeVisitor.visit_node(self, node[1])
 
         for term in node[2:]:
@@ -212,7 +212,7 @@ class Compiler(NodeVisitor):
             elif term[0] == 'DIVIDES':
                 print "\tDIV"
 
-    def accept_expression(self, node):
+    def accept_expression(self, *node):
         # Result of this expression will be on the top of stack
         NodeVisitor.visit_node(self, node[2])
 
@@ -228,15 +228,15 @@ class Compiler(NodeVisitor):
             print "\tPUSH -1"
             print "\tMUL"
 
-    def accept_print(self, node):
+    def accept_print(self, *node):
         NodeVisitor.visit_node(self, node[1])
         print "\tPRINT"
         print "\tPOP"
 
-    def accept_number(self, node):
+    def accept_number(self, *node):
         print "\tPUSH " + `node[1]`
 
-    def accept_name(self, node):
+    def accept_name(self, *node):
         defined, value, level = self.find(node[1])
 
         if defined == 'VARIABLE':

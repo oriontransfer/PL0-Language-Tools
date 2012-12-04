@@ -86,26 +86,26 @@ class Interpreter(NodeVisitor):
     def pop(self):
         return self.stack.pop()
 
-    def accept_variables(self, node):
+    def accept_variables(self, *node):
         for var in node[1:]:
             self.stack[-1].update(var[1], 0)
 
-    def accept_constants(self, node):
+    def accept_constants(self, *node):
         for var in node[1:]:
             self.stack[-1].define(var[1], var[2])
 
-    def accept_procedures(self, node):
+    def accept_procedures(self, *node):
         for proc in node[1:]:
             self.stack[-1].procedures[proc[1]] = Procedure(proc[1], proc[2], self.stack[-1])
 
-    def accept_set(self, node):
+    def accept_set(self, *node):
         name = node[1][1]
         block, result = self.evaluate(node[2])
 
         defined, value, level = self.find(name)
         self.stack[level].update(name, result)
 
-    def accept_while(self, node):
+    def accept_while(self, *node):
         condition = node[1]
         loop = node[2]
 
@@ -117,7 +117,7 @@ class Interpreter(NodeVisitor):
 
             self.evaluate(loop)
 
-    def accept_if(self, node):
+    def accept_if(self, *node):
         condition = node[1]
         body = node[2]
 
@@ -126,7 +126,7 @@ class Interpreter(NodeVisitor):
         if result:
             self.evaluate(body)
 
-    def accept_condition(self, node):
+    def accept_condition(self, *node):
         operator = node[2]
         lhs = self.evaluate(node[1])
         rhs = self.evaluate(node[3])
@@ -144,15 +144,15 @@ class Interpreter(NodeVisitor):
 
         raise ArithmeticError("Unknown comparison operator " + operator)
 
-    def accept_number(self, node):
+    def accept_number(self, *node):
         return node[1]
 
-    def accept_name(self, node):
+    def accept_name(self, *node):
         defined, value, level = self.find(node[1])
 
         return value
 
-    def accept_call(self, node):
+    def accept_call(self, *node):
         defined, value, level = self.find(node[1])
 
         if defined != 'PROCEDURE':
@@ -161,7 +161,7 @@ class Interpreter(NodeVisitor):
         block, result = self.evaluate(value.node)
         return result
 
-    def accept_term(self, node):
+    def accept_term(self, *node):
         block, total = self.evaluate(node[1])
 
         for term in node[2:]:
@@ -174,7 +174,7 @@ class Interpreter(NodeVisitor):
 
         return total
 
-    def accept_expression(self, node):
+    def accept_expression(self, *node):
         block, total = self.evaluate(node[2])
 
         for term in node[3:]:
@@ -190,7 +190,7 @@ class Interpreter(NodeVisitor):
 
         return total
 
-    def accept_print(self, node):
+    def accept_print(self, *node):
         block, result = self.evaluate(node[1])
 
         print `result`

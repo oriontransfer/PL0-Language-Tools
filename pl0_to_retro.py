@@ -34,46 +34,46 @@ import os
 
 class RetroTranspiler(Compiler):
 
-    def accept_variables(self, node ):
+    def accept_variables(self, *node ):
         pass
 
-    def accept_constants(self, node):
+    def accept_constants(self, *node):
         pass
 
-    def accept_procedures(self, node):
+    def accept_procedures(self, *node):
         pass
 
-    def accept_program(self, node):
+    def accept_program(self, *node):
         pass
 
-    def accept_while(self, node):
+    def accept_while(self, *node):
         pass
 
-    def accept_if(self, node):
+    def accept_if(self, *node):
         pass
 
-    def accept_condition(self, node):
+    def accept_condition(self, *node):
         pass
 
-    def accept_set(self, node):
+    def accept_set(self, *node):
         pass
 
-    def accept_call(self, node):
+    def accept_call(self, *node):
         pass
 
-    def accept_term(self, node):
+    def accept_term(self, *node):
         pass
 
-    def accept_expression(self, node):
+    def accept_expression(self, *node):
         pass
 
-    def accept_print(self, node):
+    def accept_print(self, *node):
         pass
 
-    def accept_number(self, node):
+    def accept_number(self, *node):
         pass
 
-    def accept_name(self, node):
+    def accept_name(self, *node):
         pass
 
 if __name__ == '__main__':
