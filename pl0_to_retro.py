@@ -22,8 +22,8 @@
 #
 
 """
-This translates the compiled pl0 machine code to retroforth
-instructions.
+This translates the pl0 syntax tree to the equivalent
+representation in retroforth ( http://retroforth.org/ )
 """
 from pl0_compiler import Block, Compiler
 from pl0_node_visitor import *
