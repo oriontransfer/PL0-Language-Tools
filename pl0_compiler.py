@@ -21,73 +21,26 @@
 # THE SOFTWARE.
 #
 
-from pl0_node_visitor import *
-import sys
-import pl0_parser
-import StringIO
 import os
+import sys
+import StringIO
+import pl0_parser
+from pl0_node_visitor import StackingNodeVisitor
 
-class Block:
-    def __init__(self):
-        self.constants = {}
-        self.variables  = {}
-        self.procedures = {}
-
-    def define(self, name, value):
-        # if self.constants.has_key(name)
-        self.constants[name] = value
-
-    def update(self, name, value):
-        self.variables[name] = value
-
-    def declare(self, name, value):
-        self.procedures[name] = value
-
-    def debug(self):
-        print "-- Stack Frame --"
-        print "Constants: " + `self.constants`
-        print "Variables: " + `self.variables`
-        print "Procedures: " + `self.procedures`
-
-    def lookup(self, name):
-        if self.constants.has_key(name):
-            return ('CONSTANT', self.constants[name],)
-        elif self.variables.has_key(name):
-            return ('VARIABLE', self.variables[name],)
-        elif self.procedures.has_key(name):
-            return ('PROCEDURE', self.procedures[name],)
-        else:
-            return (False, None,)
-
-class Compiler(NodeVisitor):
+class Compiler(StackingNodeVisitor):
 
     def __init__(self):
-        self.stack = []
+        super(Compiler, self).__init__()
         self.label_id = 0
 
     def intermediate_label(self, hint = ''):
         self.label_id += 1
         return 't_' + hint + '_' + `self.label_id`
 
-    def find(self, name):
-        for x in range(1, len(self.stack) + 1):
-            defined, value = self.stack[-x].lookup(name)
-
-            if defined:
-                return (defined, value, -x,)
-
-        raise NameError("Undefined name referenced: " + `name`)
-
     def generate(self, node):
         self.push()
         result = self.visit_node(node)
         return [self.pop(), result]
-
-    def push(self):
-        self.stack.append(Block())
-
-    def pop(self):
-        return self.stack.pop()
 
     def accept_variables(self, *node):
         for var in node[1:]:
@@ -118,11 +71,11 @@ class Compiler(NodeVisitor):
 
             # Generate any static storage required by the procedure
             print "# Procedure " + proc[1]
-            NodeVisitor.visit_expressions(self, proc[2][1:3])
+            self.visit_expressions(proc[2][1:3])
 
             # Generate the code for the procedure
             print proc_name + ":"
-            NodeVisitor.visit_node(self, proc[2][4])
+            self.visit_node(proc[2][4])
             print "\tRET"
 
             # Finished with lexical scope
@@ -132,10 +85,10 @@ class Compiler(NodeVisitor):
         print "JMP main"
 
         block = node[1]
-        NodeVisitor.visit_expressions(self, block[1:4])
+        self.visit_expressions(block[1:4])
 
         print "main:"
-        NodeVisitor.visit_node(self, block[4])
+        self.visit_node(block[4])
         print "\tHALT"
 
     def accept_while(self, *node):
@@ -147,11 +100,11 @@ class Compiler(NodeVisitor):
 
         print top_label + ":"
         # Result of condition is on top of stack
-        NodeVisitor.visit_node(self, condition)
+        self.visit_node(condition)
 
         print "\tJE " + bottom_label
 
-        NodeVisitor.visit_node(self, loop)
+        self.visit_node(loop)
 
         print "\tJMP " + top_label
         print bottom_label + ":"
@@ -162,11 +115,11 @@ class Compiler(NodeVisitor):
         condition = node[1]
         body = node[2]
 
-        NodeVisitor.visit_node(self, condition)
+        self.visit_node(condition)
 
         print "\tJE " + false_label
 
-        NodeVisitor.visit_node(self, body)
+        self.visit_node(body)
 
         print false_label + ":"
 
@@ -175,15 +128,15 @@ class Compiler(NodeVisitor):
         lhs = node[1]
         rhs = node[3]
 
-        NodeVisitor.visit_node(self, lhs)
-        NodeVisitor.visit_node(self, rhs)
+        self.visit_node(lhs)
+        self.visit_node(rhs)
 
         print "\tCMP" + operator
 
     def accept_set(self, *node):
         name = node[1][1]
 
-        NodeVisitor.visit_node(self, node[2])
+        self.visit_node(node[2])
 
         assign_to = node[1][1]
         defined, value, level = self.find(assign_to)
@@ -202,10 +155,10 @@ class Compiler(NodeVisitor):
         print "\tCALL " + value
 
     def accept_term(self, *node):
-        NodeVisitor.visit_node(self, node[1])
+        self.visit_node(node[1])
 
         for term in node[2:]:
-            NodeVisitor.visit_node(self, term[1])
+            self.visit_node(term[1])
 
             if term[0] == 'TIMES':
                 print "\tMUL"
@@ -214,10 +167,10 @@ class Compiler(NodeVisitor):
 
     def accept_expression(self, *node):
         # Result of this expression will be on the top of stack
-        NodeVisitor.visit_node(self, node[2])
+        self.visit_node(node[2])
 
         for term in node[3:]:
-            NodeVisitor.visit_node(self, term[1])
+            self.visit_node(term[1])
 
             if term[0] == 'PLUS':
                 print "\tADD"
@@ -229,7 +182,7 @@ class Compiler(NodeVisitor):
             print "\tMUL"
 
     def accept_print(self, *node):
-        NodeVisitor.visit_node(self, node[1])
+        self.visit_node(node[1])
         print "\tPRINT"
         print "\tPOP"
 
