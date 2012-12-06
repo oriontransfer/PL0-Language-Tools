@@ -1,0 +1,9 @@
+#!/bin/bash
+# This shows differences from the expected output,
+# to make it easier to change/refactor the code.
+./pl0_compiler.py < examples/fibonacci.pl0 > expect/fibonacci.asm
+./pl0_interpreter.py < examples/fibonacci.pl0 > expect/fibonacci.run
+./pl0_graphviz.py < examples/fibonacci.pl0
+mv graph.dot expect/fibonacci.dot
+rm -f fibonacci.pdf
+git diff ./expect
