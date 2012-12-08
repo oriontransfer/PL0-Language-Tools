@@ -39,12 +39,13 @@ GraphFooter = '''
 
 class GraphPrinter(NodeVisitor):
     def __init__(self):
+        super(GraphPrinter, self).__init__()
         self.buf = None
         self.next = 0
         self.nodes = {}
-        self.stack = []
         self.procedures = {}
 
+    #override
     def push(self, node):
         self.stack.append(node)
 
@@ -57,9 +58,6 @@ class GraphPrinter(NodeVisitor):
     def parent_id(self):
         parent = self.stack[-2]
         return self.nodes[id(parent)]
-
-    def pop(self):
-        self.stack.pop()
 
     def generate_graph(self, program):
         self.buf = StringIO.StringIO()
@@ -74,70 +72,79 @@ class GraphPrinter(NodeVisitor):
 
         return contents
 
-    def accept_program(self, node):
+    def accept_program(self, *node):
         node_id = self.push(node)
-        self.buf.write("    node [shape=doublecircle,label=\"%s\",color=green]; %s;\n" % (node[0], node_id,))
+        self.buf.write("\tnode [shape=doublecircle,label=\"%s\",color=green]; %s;\n"
+                       % (node[0], node_id,))
         NodeVisitor.accept_node(self, node)
         self.pop()
 
     def accept_node(self, node):
         node_id = self.push(node)
         parent_id = self.parent_id()
-        self.buf.write("    node [shape=circle,label=\"%s\",color=black]; %s -> %s;\n" % (node[0], parent_id, node_id,))
+        self.buf.write("\tnode [shape=circle,label=\"%s\",color=black]; %s -> %s;\n"
+                       % (node[0], parent_id, node_id,))
         NodeVisitor.accept_node(self, node)
         self.pop()
 
-    def accept_define(self, node):
+    def accept_define(self, *node):
         node_id = self.push(node)
         parent_id = self.parent_id()
         label = "%s = %d" % node[1:]
-        self.buf.write("    node [shape=circle,label=\"%s\",color=black]; %s -> %s;\n" % (label, parent_id, node_id,))
+        self.buf.write("\tnode [shape=circle,label=\"%s\",color=black]; %s -> %s;\n"
+                       % (label, parent_id, node_id,))
         NodeVisitor.accept_node(self, node)
         self.pop()
 
-    def accept_condition(self, node):
+    def accept_condition(self, *node):
         node_id = self.push(node)
         parent_id = self.parent_id()
-        self.buf.write("    node [shape=diamond,label=\"%s\",color=orange]; %s -> %s;\n" % (node[2], parent_id, node_id,))
+        self.buf.write("\tnode [shape=diamond,label=\"%s\",color=orange]; %s -> %s;\n"
+                       % (node[2], parent_id, node_id,))
         NodeVisitor.accept_node(self, node)
         self.pop()
 
-    def accept_name(self, node):
+    def accept_name(self, *node):
         node_id = self.push(node)
         parent_id = self.parent_id()
-        self.buf.write("    node [shape=square,label=\"%s\",color=blue]; %s -> %s;\n" % (node[1], parent_id, node_id,))
+        self.buf.write("\tnode [shape=square,label=\"%s\",color=blue]; %s -> %s;\n"
+                       % (node[1], parent_id, node_id,))
         self.pop()
 
-    def accept_number(self, node):
+    def accept_number(self, *node):
         node_id = self.push(node)
         parent_id = self.parent_id()
-        self.buf.write("    node [shape=square,label=\"%d\",color=blue]; %s -> %s;\n" % (node[1], parent_id, node_id,))
+        self.buf.write("\tnode [shape=square,label=\"%d\",color=blue]; %s -> %s;\n"
+                       % (node[1], parent_id, node_id,))
         self.pop()
 
-    def accept_procedure(self, node):
+    def accept_procedure(self, *node):
         node_id = self.push(node)
         self.procedures[node[1]] = node_id
         parent_id = self.parent_id()
-        self.buf.write("    node [shape=trapezium,label=\"%s\",color=purple]; %s -> %s;\n" % (node[1], parent_id, node_id,))
+        self.buf.write("\tnode [shape=trapezium,label=\"%s\",color=purple]; %s -> %s;\n"
+                       % (node[1], parent_id, node_id,))
         NodeVisitor.accept_node(self, node)
         self.pop()
 
-    def accept_expression(self, node):
+    def accept_expression(self, *node):
         node_id = self.push(node)
         parent_id = self.parent_id()
-        self.buf.write("    node [shape=circle,label=\"EXPR\",color=blue]; %s -> %s;\n" % (parent_id, node_id,))
+        self.buf.write("\tnode [shape=circle,label=\"EXPR\",color=blue]; %s -> %s;\n"
+                       % (parent_id, node_id,))
         NodeVisitor.accept_node(self, node)
         self.pop()
 
-    def accept_call(self, node):
+    def accept_call(self, *node):
         node_id = self.push(node)
         parent_id = self.parent_id()
         proc_id = self.procedures[node[1]]
         label = "CALL |{%s}" % node[1]
-        self.buf.write("    node [shape=record,label=\"%s\",color=purple]; %s -> %s;\n" % (label, parent_id, node_id,))
+        self.buf.write("\tnode [shape=record,label=\"%s\",color=purple]; %s -> %s;\n"
+                       % (label, parent_id, node_id,))
         self.pop()
 
-    def accept_term(self, node):
+    def accept_term(self, *node):
         NodeVisitor.accept_node(self, node)
 
 if __name__ == '__main__':
