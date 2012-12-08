@@ -6,4 +6,4 @@
 ./pl0_graphviz.py < examples/fibonacci.pl0
 mv graph.dot expect/fibonacci.dot
 rm -f fibonacci.pdf
-git diff ./expect
+git diff --word-diff ./expect
