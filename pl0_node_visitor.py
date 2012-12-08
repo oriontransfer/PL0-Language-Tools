@@ -26,14 +26,36 @@ class NodeVisitor(object):
         if node is None:
             return None
 
-        try:
-            m = getattr(self, "accept_%s" % node[0].lower())
-        except AttributeError:
-            return self.accept_node(node)
-        else:
-            return m(*node)
+        m = getattr(self, "accept_%s" % node[0].lower(),
+                    self.accept_node)
+        return self._invoke_method(m, node)
 
-    def accept_node(self, node):
+    def _invoke_method(self, meth, node):
+        """
+        This is ugly. The idea here was to be able to replace
+        "node" in the parameter lists with specific named arguments
+        so you could say, e.g., 'block' rather than 'node[1]'.
+
+        Unfortunately, for the moment, the graphviz walker relies
+        on id(*node), so we have to allow overriding this to pass
+        the actual object.
+
+        NOTE: The graphviz issue could be fixed by moving the
+        symbol name generator up into the parser, so that it always
+        generates a uinque node id. ("BLOCK:0" or ("BLOCK",0) instead
+        of just "BLOCK").
+        """
+        return meth(*node)
+
+    def accept_node(self, *node):
+        """
+        The double layer of indirection here is again because
+        of the different way the graph printer want to use the
+        signature.
+        """
+        return self.visit_children(node)
+
+    def visit_children(self, node):
         return self.visit_expressions(node[1:])
 
     def visit_expressions(self, expressions):
