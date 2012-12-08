@@ -1,9 +1,12 @@
 #!/bin/bash
 # This shows differences from the expected output,
 # to make it easier to change/refactor the code.
-./pl0_compiler.py < examples/fibonacci.pl0 > expect/fibonacci.asm
-./pl0_interpreter.py < examples/fibonacci.pl0 > expect/fibonacci.run
-./pl0_graphviz.py < examples/fibonacci.pl0
+git checkout -- expect/fibonacci.*
+rm -rf err.txt
+./pl0_compiler.py < examples/fibonacci.pl0 > expect/fibonacci.asm 2>err.txt
+./pl0_interpreter.py < examples/fibonacci.pl0 > expect/fibonacci.run 2>>err.txt
+./pl0_graphviz.py < examples/fibonacci.pl0 2>>err.txt
 mv graph.dot expect/fibonacci.dot
 rm -f fibonacci.pdf
+if [ -a err.txt ]; then less err.txt ; fi
 git diff --word-diff ./expect
