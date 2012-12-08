@@ -25,8 +25,7 @@
 This translates the pl0 syntax tree to the equivalent
 representation in retroforth ( http://retroforth.org/ )
 """
-from pl0_compiler import Block, Compiler
-from pl0_node_visitor import *
+from pl0_compiler import Compiler
 import sys
 import pl0_parser
 import StringIO
