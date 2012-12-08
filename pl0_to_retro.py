@@ -25,42 +25,74 @@
 This translates the pl0 syntax tree to the equivalent
 representation in retroforth ( http://retroforth.org/ )
 """
-from pl0_compiler import Compiler
+from pl0_node_visitor import StackingNodeVisitor
 import sys
 import pl0_parser
 import StringIO
 import os
+import types
 
-class RetroTranspiler(Compiler):
+# AST->retro translator for operators
+ops = {
+    'DIVIDE' : '/',   # integer div
+    'MODULO' : 'mod',
+    'TIMES'  : '*',
+    'PLUS'   : '+',
+    'MINUS'  : '-',
+}
+
+class RetroTranspiler(StackingNodeVisitor):
 
+    def visit( self, node ):
+        """like visit_node but works with generators"""
+        result = self.visit_node( node )
+        if isinstance( result, types.GeneratorType ):
+            result = "\n".join( result )
+        return result
+
     #-- simple numbers -----------------
 
-    def accept_number(self, *node):
-        pass
+    def accept_number(self, nid, value):
+        print value,
 
     # logically, print ("!") would come much later
     # but i'm putting these in implementation order,
     # and i want this up front so i can see the
     # results of running the code.
-    def accept_print(self, *node):
-        pass
-
+    def accept_print(self, nid, expr):
+        self.visit( expr )
+        print "putn"
+
     #-- expressions --------------------
 
-    def accept_term(self, *node):
-        pass
+    # example: a + b * c + d * e + f
+    # becomes: a b c * + d e * + f +
 
-    def accept_expression(self, *node):
-        pass
+    # term = factor {("*"|"/") factor}.
+    def accept_term( self, nid, *factors_tup ):
+        factors = list( factors_tup )
+        self.visit( factors.pop( 0 ))
+        for operator, operand in factors:
+            self.visit( operand )
+            print ops[ operator ]
 
+    # expression = [ "+"|"-"] term { ("+"|"-") term}.
+    def accept_expression(self, nid, *terms_tup):
+        terms = list( terms_tup )
+        self.visit( terms.pop( 0 ))
+        for operator, term in terms:
+            self.visit( term )
+            if operator != 'TERM':
+                print ops[ operator ],
+
     #-- named constants ----------------
-
+"""
     def accept_constants(self, nid, consts):
         pass
 
     def accept_name(self, *node):
         pass
-
+
     #-- named variables & assignment ---
 
     def accept_variables(self, nid, vars):
@@ -68,7 +100,7 @@ class RetroTranspiler(Compiler):
 
     def accept_set(self, nid, ident, expr):
         pass
-
+
     #-- flow control -------------------
 
     def accept_condition(self, *node):
@@ -79,7 +111,7 @@ class RetroTranspiler(Compiler):
 
     def accept_while(self, nid, expr, block):
         pass
-
+
     #-- procedures ---------------------
 
     def accept_procedure(self, nid, name, block):
@@ -90,7 +122,7 @@ class RetroTranspiler(Compiler):
 
     def accept_program(self, nid, block):
         pass
-
+"""
 
 if __name__ == '__main__':
     code = sys.stdin.read()
@@ -98,4 +130,4 @@ if __name__ == '__main__':
     parser.input(code)
     program = parser.p_program()
     compiler = RetroTranspiler()
-    compiler.generate(program)
+    compiler.visit_node(program)
