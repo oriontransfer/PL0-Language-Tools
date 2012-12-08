@@ -33,32 +33,19 @@ import os
 
 class RetroTranspiler(Compiler):
 
-    def accept_variables(self, *node ):
+    #-- simple numbers -----------------
+
+    def accept_number(self, *node):
         pass
 
-    def accept_constants(self, *node):
+    # logically, print ("!") would come much later
+    # but i'm putting these in implementation order,
+    # and i want this up front so i can see the
+    # results of running the code.
+    def accept_print(self, *node):
         pass
 
-    def accept_procedures(self, *node):
-        pass
-
-    def accept_program(self, *node):
-        pass
-
-    def accept_while(self, *node):
-        pass
-
-    def accept_if(self, *node):
-        pass
-
-    def accept_condition(self, *node):
-        pass
-
-    def accept_set(self, *node):
-        pass
-
-    def accept_call(self, *node):
-        pass
+    #-- expressions --------------------
 
     def accept_term(self, *node):
         pass
@@ -66,14 +53,44 @@ class RetroTranspiler(Compiler):
     def accept_expression(self, *node):
         pass
 
-    def accept_print(self, *node):
-        pass
+    #-- named constants ----------------
 
-    def accept_number(self, *node):
+    def accept_constants(self, nid, consts):
         pass
 
     def accept_name(self, *node):
         pass
+
+    #-- named variables & assignment ---
+
+    def accept_variables(self, nid, vars):
+        pass
+
+    def accept_set(self, nid, ident, expr):
+        pass
+
+    #-- flow control -------------------
+
+    def accept_condition(self, *node):
+        pass
+
+    def accept_if(self, *node):
+        pass
+
+    def accept_while(self, nid, expr, block):
+        pass
+
+    #-- procedures ---------------------
+
+    def accept_procedure(self, nid, name, block):
+        pass
+
+    def accept_call(self, *node):
+        pass
+
+    def accept_program(self, nid, block):
+        pass
+
 
 if __name__ == '__main__':
     code = sys.stdin.read()
