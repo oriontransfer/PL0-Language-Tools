@@ -7,6 +7,6 @@ rm -rf err.txt
 ./pl0_interpreter.py < examples/fibonacci.pl0 > expect/fibonacci.run 2>>err.txt
 ./pl0_graphviz.py < examples/fibonacci.pl0 2>>err.txt
 mv graph.dot expect/fibonacci.dot
-rm -f fibonacci.pdf
+rm -f graph.pdf
 if [ -a err.txt ]; then less err.txt ; fi
 git diff --word-diff ./expect
