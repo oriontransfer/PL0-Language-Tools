@@ -74,7 +74,7 @@ class RetroTranspiler(StackingNodeVisitor):
         self.visit( factors.pop( 0 ))
         for operator, operand in factors:
             self.visit( operand )
-            print ops[ operator ]
+            print ops[ operator ],
 
     # expression = [ "+"|"-"] term { ("+"|"-") term}.
     def accept_expression(self, nid, *terms_tup):
