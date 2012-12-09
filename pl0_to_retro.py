@@ -161,13 +161,38 @@ class RetroTranspiler(StackingNodeVisitor):
         self.visit( lhs )
         self.visit( rhs )
         print rel_ops[ rel ]
+
+    def accept_if(self, nid, cond, stmt):
+        # retro's quotations ([..]) are high level functional constructs.
+        # they are nice, but incur a small extra runtime overhead.
+        # TODO: go back and use plain old jumps for speed
+        self.visit( cond )
+        print "["
+        self.visit( stmt )
+        print "] ifTrue"
+
+    def accept_while(self, nid, cond, stmt):
+        # retro actually doesn't have a standard "loop
+        # with the test at the start". the "while" word
+        # it offers is more like "repeat <stmt> until not <cond>"
+        # so we'll use quotations for now.
+        # essentially, we're saying:
+        #
+        #    IF <cond> THEN REPEAT <stmt> UNTIL NOT <cond>;
+        #
+        # which in functional-style retro is:
+        #
+        #    [ <cond> ] [ [ <stmt> <cond> ] while ] ifTrue
+        #
+        # TODO: lower level/faster WHILE implementation
+        print "[ ",
+        self.visit( cond )
+        print "] [ [",
+        self.visit( stmt )
+        self.visit( cond )
+        print "] while ] ifTrue"
+
 """
-    def accept_if(self, *node):
-        pass
-
-    def accept_while(self, nid, expr, block):
-        pass
-
 
     #-- procedures ---------------------
 

@@ -1,0 +1,9 @@
+# should print 1 2 3 4 5
+VAR x;
+BEGIN 
+  x := 0;
+  WHILE x < 5 DO BEGIN
+    x := x + 1;
+    ! x
+  END
+END.
