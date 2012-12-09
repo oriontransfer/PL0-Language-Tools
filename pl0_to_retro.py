@@ -40,6 +40,15 @@ ops = {
     'PLUS'   : '+',
     'MINUS'  : '-',
 }
+
+rel_ops = {
+    'LT'     : '<',
+    'LTE'    : '<=',
+    'GT'     : '>',
+    'GTE'    : '>=',
+    'E'      : '=',
+    'NE'     : '<>',
+}
 
 class RetroTranspiler(StackingNodeVisitor):
 
@@ -145,18 +154,20 @@ class RetroTranspiler(StackingNodeVisitor):
         self.visit( name )
         print "!"
 
-"""
 
     #-- flow control -------------------
 
-    def accept_condition(self, *node):
-        pass
-
+    def accept_condition(self, nid, lhs, rel, rhs):
+        self.visit( lhs )
+        self.visit( rhs )
+        print rel_ops[ rel ]
+"""
     def accept_if(self, *node):
         pass
 
     def accept_while(self, nid, expr, block):
         pass
+
 
     #-- procedures ---------------------
 
