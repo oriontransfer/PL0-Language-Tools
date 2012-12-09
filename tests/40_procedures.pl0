@@ -1,0 +1,17 @@
+# no parametrs in this language, so we'll use a global for now
+var i;
+
+procedure square;
+ var n;
+begin
+  n := i;
+  ! ( n * n )
+end;
+
+begin
+  i := 0 ;
+  while i < 10 do begin
+    i := i + 1 ;
+    call square
+  end
+end.
