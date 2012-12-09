@@ -80,9 +80,12 @@ class RetroTranspiler(StackingNodeVisitor):
     def accept_expression(self, nid, *terms_tup):
         terms = list( terms_tup )
         self.visit( terms.pop( 0 ))
-        for operator, term in terms:
-            self.visit( term )
-            if operator != 'TERM':
+        for node in terms:
+            if node[0]=="TERM":
+                self.visit(node)
+            else:
+                operator, term = node
+                self.visit( term )
                 print ops[ operator ],
 
     #-- named constants ----------------
