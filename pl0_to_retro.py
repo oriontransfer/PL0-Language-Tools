@@ -157,6 +157,10 @@ class RetroTranspiler(StackingNodeVisitor):
 
     #-- flow control -------------------
 
+    def accept_odd(self, nid, expr):
+        self.visit( expr )
+        print "2 mod 1 =",
+
     def accept_condition(self, nid, lhs, rel, rhs):
         self.visit( lhs )
         self.visit( rhs )
