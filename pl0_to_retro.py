@@ -98,15 +98,21 @@ class RetroTranspiler(StackingNodeVisitor):
     def accept_name(self, nid, name):
         print name,
 
-"""
 
     #-- named variables & assignment ---
 
-    def accept_variables(self, nid, vars):
-        pass
+    def accept_variables(self, nid, *names):
+        print "variables|",
+        for nid, name in names:
+            print name,
+        print "|"
 
-    def accept_set(self, nid, ident, expr):
-        pass
+    def accept_set(self, nid, name, expr):
+        self.visit( expr )
+        self.visit( name )
+        print "!"
+
+"""
 
     #-- flow control -------------------
 
