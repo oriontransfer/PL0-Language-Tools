@@ -89,12 +89,16 @@ class RetroTranspiler(StackingNodeVisitor):
                 print ops[ operator ],
 
     #-- named constants ----------------
-"""
-    def accept_constants(self, nid, consts):
-        pass
 
-    def accept_name(self, *node):
-        pass
+    def accept_define(self, nid, name, value):
+        print value,
+        print "constant",
+        print name
+
+    def accept_name(self, nid, name):
+        print name,
+
+"""
 
     #-- named variables & assignment ---
 
