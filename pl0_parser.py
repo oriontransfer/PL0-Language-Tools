@@ -295,7 +295,10 @@ class Parser(SymbolParser):
 
         lhs = self.p_expression()
 
-        if self.sym.type in ['LT', 'LTE', 'GT', 'GTE', 'E', 'NE']:
+        if odd:
+            return ('ODD', lhs)
+
+        elif self.sym.type in ['LT', 'LTE', 'GT', 'GTE', 'E', 'NE']:
             op = self.sym.type
             self.get_sym('condition-operand')
 

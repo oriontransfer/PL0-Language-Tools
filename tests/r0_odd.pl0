@@ -1,0 +1,7 @@
+# regression test for "odd" bug in parser
+BEGIN
+  IF ODD 0 THEN ! 0;
+  IF ODD 1 THEN ! 1;
+  IF ODD 2 THEN ! 2;
+  IF ODD 3 THEN ! 3
+END.
