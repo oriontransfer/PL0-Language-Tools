@@ -82,6 +82,10 @@ class Interpreter(StackingNodeVisitor):
         if result:
             self.evaluate(body)
 
+    def accept_odd(self, nid, expr):
+        block, result = self.evaluate(expr)
+        return result % 2 != 0
+
     def accept_condition(self, *node):
         operator = node[2]
         lhs = self.evaluate(node[1])
