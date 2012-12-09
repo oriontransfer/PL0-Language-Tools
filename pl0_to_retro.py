@@ -43,6 +43,21 @@ ops = {
 
 class RetroTranspiler(StackingNodeVisitor):
 
+    def __init__(self):
+        super(RetroTranspiler, self)
+        # negative signs are not included in number tokens,
+        # because a lexer cannot distinguish the "-1" in
+        # the expression "x-1" from "-1" as a negative numer.
+        #
+        # the parser does this as part of the "expression"
+        # rule, so "-1" is parsed as "-(1)". As an optimization,
+        # we set the following flag in accept_expression when
+        # we can see that the value between the parens is a
+        # numeric literal. Then we can emit a negative literal
+        # rather than emittting code to multiply the positive
+        # literal by -1.
+        self.negate = False
+
     def visit( self, node ):
         """like visit_node but works with generators"""
         result = self.visit_node( node )
@@ -53,7 +68,11 @@ class RetroTranspiler(StackingNodeVisitor):
     #-- simple numbers -----------------
 
     def accept_number(self, nid, value):
-        print value,
+        if self.negate:
+            print "-{0}".format(value),
+            self.negate = False
+        else:
+            print value,
 
     # logically, print ("!") would come much later
     # but i'm putting these in implementation order,
@@ -77,9 +96,20 @@ class RetroTranspiler(StackingNodeVisitor):
             print ops[ operator ],
 
     # expression = [ "+"|"-"] term { ("+"|"-") term}.
-    def accept_expression(self, nid, *terms_tup):
+    def accept_expression(self, nid, sign, *terms_tup):
         terms = list( terms_tup )
-        self.visit( terms.pop( 0 ))
+
+        # handle negative numbers and unary minus
+        negate_value = False
+        negate_after = False
+        if sign == "MINUS":
+            assert len(terms_tup) == 1
+            if terms_tup[0][1][0] == "NUMBER":
+                self.negate = True
+            else:
+                negate_after = True
+
+        # generate the normal expression
         for node in terms:
             if node[0]=="TERM":
                 self.visit(node)
@@ -87,6 +117,9 @@ class RetroTranspiler(StackingNodeVisitor):
                 operator, term = node
                 self.visit( term )
                 print ops[ operator ],
+
+        if negate_after:
+            print "-1 *",
 
     #-- named constants ----------------
 
