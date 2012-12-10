@@ -12,14 +12,13 @@ var
 procedure helper;
   var bit;
 begin
-
-  number := number / 234;
-  ! number;
-
   # we'll use the built in "odd" operator to test the lowest
   # bit, and then divide by two to discard it.
   bit := 0;
   if odd number then bit := 1;
+
+  number := number / 2;
+
   # since we want to print the bits from highest to lowest,
   # but we're starting with the lowest, we need to put the
   # the recursive call in the middle.
