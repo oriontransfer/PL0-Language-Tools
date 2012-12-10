@@ -207,7 +207,7 @@ class RetroTranspiler(StackingNodeVisitor):
     def accept_program(self, nid, block):
 
         print "( -- runtime library ------------ )"
-        print ": odd? ( n - n ) 2 mod 1 = ;"
+        print ": odd? ( n - f ) 2 mod 1 = ;"
         print "( -- main code ------------------ )"
 
         (blocknid, procs, consts, vars, stmt) = block
@@ -223,21 +223,30 @@ class RetroTranspiler(StackingNodeVisitor):
 
 
     proc_path = []    # for nested procedure defs
-    proc_locs = {}    # map path to local names
+    proc_defs = {}    # map '/'.join(proc_path) to local defs
+    local_defs = {}   # symbol table for top level or current procedure
+    scope = []        # list of symbol tables for lexical scoping
 
+    def locals(self):
+        return [ 'bit' ]
+
+
     # for recursion, we need to maintain a stack
     def accept_procedure(self, nid, name, block):
-        self.proc_locs.setdefault(name, {})
+
         (blocknid, procs, consts, vars, stmt) = block
 
+        self.proc_path.append(name)
         print "{{"
-        print ": --retro-reveal-workaround-- ;"
+        if not ( procs or consts or vars ):
+            print ": --retro-reveal-workaround-- ;"
         self.visit_expressions([procs, consts, vars])
         print "---reveal---"
         print ":", name,
         self.visit(stmt)
         print ";"
         print "}}"
+        self.proc_path.pop()
 
     def accept_call(self, nid, name):
 
@@ -250,10 +259,15 @@ class RetroTranspiler(StackingNodeVisitor):
         def call(): print name,
 
         if recursive:
-            for ident in procvars:
+            print
+            print "( -- preserve state -- )"
+            for ident in self.locals():
                 print ident, "@"
+            print "( -- recurse -- )"
             call()
-            for ident in procvars:
+            print
+            print "( -- restore state -- )"
+            for ident in reversed( self.locals()):
                 print ident, "!"
         else:
             call()
