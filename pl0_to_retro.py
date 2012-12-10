@@ -207,21 +207,21 @@ class RetroTranspiler(StackingNodeVisitor):
     def accept_program(self, nid, block):
 
         print "( -- runtime library ------------ )"
-        print ": odd? mod 2 1 = ;"
+        print ": odd? ( n - n ) 2 mod 1 = ;"
         print "( -- main code ------------------ )"
 
         (blocknid, procs, consts, vars, stmt) = block
         self.visit_expressions([procs, consts, vars])
-        print ": run",
+        print ": run ( - )",
         self.visit(stmt)
         print ";"
         print
+
         print "( ------------------------------- )"
         print "3 [ cr ] times"
         print "run"
 
 
-
     proc_path = []    # for nested procedure defs
     proc_locs = {}    # map path to local names
 
