@@ -231,6 +231,7 @@ class RetroTranspiler(StackingNodeVisitor):
         (blocknid, procs, consts, vars, stmt) = block
 
         print "{{"
+        print ": --retro-reveal-workaround-- ;"
         self.visit_expressions([procs, consts, vars])
         print "---reveal---"
         print ":", name,
