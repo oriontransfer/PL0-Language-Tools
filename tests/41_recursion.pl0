@@ -40,8 +40,6 @@ begin
 end;
 
 begin
-  cursor := digits;
   number := 5;  # binary :  0 1 0 1
-  call binary;
-  ! number
+  call binary
 end.
