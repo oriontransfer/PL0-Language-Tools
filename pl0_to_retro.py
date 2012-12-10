@@ -34,8 +34,8 @@ import types
 
 # AST->retro translator for operators
 ops = {
-    'DIVIDE' : '/',   # integer div
-    'MODULO' : 'mod',
+    'DIVIDE' : 'div',   # integer div
+    'MODULO' : '/',
     'TIMES'  : '*',
     'PLUS'   : '+',
     'MINUS'  : '-',
@@ -52,6 +52,8 @@ rel_ops = {
 
 class RetroTranspiler(StackingNodeVisitor):
 
+    stacksize = 256 # cells
+
     def __init__(self):
         super(RetroTranspiler, self)
         # negative signs are not included in number tokens,
@@ -66,6 +68,7 @@ class RetroTranspiler(StackingNodeVisitor):
         # rather than emittting code to multiply the positive
         # literal by -1.
         self.negate = False
+        self.name_op = "@"
 
     def visit( self, node ):
         """like visit_node but works with generators"""
@@ -89,7 +92,7 @@ class RetroTranspiler(StackingNodeVisitor):
     # results of running the code.
     def accept_print(self, nid, expr):
         self.visit( expr )
-        print "putn"
+        print "putn cr",
 
     #-- expressions --------------------
 
@@ -134,11 +137,12 @@ class RetroTranspiler(StackingNodeVisitor):
 
     def accept_define(self, nid, name, value):
         print value,
-        print "constant",
+        #TODO: print "constant",
+        print "variable:"
         print name
 
     def accept_name(self, nid, name):
-        print name,
+        print name, self.name_op,
 
 
     #-- named variables & assignment ---
@@ -151,15 +155,16 @@ class RetroTranspiler(StackingNodeVisitor):
 
     def accept_set(self, nid, name, expr):
         self.visit( expr )
+        self.name_op = "!"
         self.visit( name )
-        print "!"
+        self.name_op = "@"
 
 
     #-- flow control -------------------
 
     def accept_odd(self, nid, expr):
         self.visit( expr )
-        print "2 mod 1 =",
+        print "odd?",
 
     def accept_condition(self, nid, lhs, rel, rhs):
         self.visit( lhs )
@@ -171,7 +176,7 @@ class RetroTranspiler(StackingNodeVisitor):
         # they are nice, but incur a small extra runtime overhead.
         # TODO: go back and use plain old jumps for speed
         self.visit( cond )
-        print "["
+        print "[",
         self.visit( stmt )
         print "] ifTrue"
 
@@ -194,21 +199,57 @@ class RetroTranspiler(StackingNodeVisitor):
         print "] [ [",
         self.visit( stmt )
         self.visit( cond )
-        print "] while ] ifTrue"
+        print "] while ] ifTrue",
 
-"""
 
     #-- procedures ---------------------
 
-    def accept_procedure(self, nid, name, block):
-        pass
-
-    def accept_call(self, *node):
-        pass
-
     def accept_program(self, nid, block):
-        pass
-"""
+        # print "( ---------------------------------- )"
+        # print "( setup                              )"
+        # print "( ---------------------------------- )"
+        # print
+        # print "( remember state of the heap and )"
+        # print "( pointer to the last known word )"
+        # print "last constant <last>"
+        # print "heap constant <heap>"
+        # print
+        # print "( set up a small stack for local vars )"
+        # print "here constant $start"
+        # print self.stacksize, "allot"
+        # print "here variable: $stack"
+        # print "0 variable: $count"
+        # print "0 variable: $base"
+        # print 
+
+        print "( ---------------------------------- )"
+        print "( runtime library                    )"
+        print "( ---------------------------------- )"
+        print ": odd? mod 2 1 = ;"
+        print
+        print "( ---------------------------------- )"
+        print "( generated code                     )"
+        print "( ---------------------------------- )"
+        self.visit(block)
+
+        # print "( ---------------------------------- )"
+        # print "( cleanup                            )"
+        # print "( ---------------------------------- )"
+        # print "<heap> heap !"
+        # print "<last> last !"
+        print "bye"
+
+    def accept_procedure(self, nid, name, block):
+        (blocknid, procs, consts, vars, stmt) = block
+        self.visit(consts)
+        self.visit(vars)
+        print ":", name,
+        self.visit(stmt)
+        print ";"
+
+    def accept_call(self, nid, name):
+        print name,
+
 
 if __name__ == '__main__':
     code = sys.stdin.read()
