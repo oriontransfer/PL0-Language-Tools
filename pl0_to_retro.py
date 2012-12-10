@@ -235,17 +235,19 @@ class RetroTranspiler(StackingNodeVisitor):
     def accept_procedure(self, nid, name, block):
 
         (blocknid, procs, consts, vars, stmt) = block
-
         self.proc_path.append(name)
-        print "{{"
-        if not ( procs or consts or vars ):
-            print ": --retro-reveal-workaround-- ;"
+
+        has_locals = ( procs or consts or vars )
+        if has_locals:
+            print "{{"
         self.visit_expressions([procs, consts, vars])
-        print "---reveal---"
+        if has_locals:
+            print "---reveal---"
         print ":", name,
         self.visit(stmt)
         print ";"
-        print "}}"
+        if has_locals:
+            print "}}"
         self.proc_path.pop()
 
     def accept_call(self, nid, name):
