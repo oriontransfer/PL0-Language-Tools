@@ -34,8 +34,8 @@ import types
 
 # AST->retro translator for operators
 ops = {
-    'DIVIDE' : 'div',   # integer div
-    'MODULO' : '/',
+    'DIVIDE' : '/',   # integer div
+    'MODULO' : 'mod',
     'TIMES'  : '*',
     'PLUS'   : '+',
     'MINUS'  : '-',
@@ -205,51 +205,57 @@ class RetroTranspiler(StackingNodeVisitor):
     #-- procedures ---------------------
 
     def accept_program(self, nid, block):
-        # print "( ---------------------------------- )"
-        # print "( setup                              )"
-        # print "( ---------------------------------- )"
-        # print
-        # print "( remember state of the heap and )"
-        # print "( pointer to the last known word )"
-        # print "last constant <last>"
-        # print "heap constant <heap>"
-        # print
-        # print "( set up a small stack for local vars )"
-        # print "here constant $start"
-        # print self.stacksize, "allot"
-        # print "here variable: $stack"
-        # print "0 variable: $count"
-        # print "0 variable: $base"
-        # print 
 
-        print "( ---------------------------------- )"
-        print "( runtime library                    )"
-        print "( ---------------------------------- )"
+        print "( -- runtime library ------------ )"
         print ": odd? mod 2 1 = ;"
-        print
-        print "( ---------------------------------- )"
-        print "( generated code                     )"
-        print "( ---------------------------------- )"
-        self.visit(block)
+        print "( -- main code ------------------ )"
 
-        # print "( ---------------------------------- )"
-        # print "( cleanup                            )"
-        # print "( ---------------------------------- )"
-        # print "<heap> heap !"
-        # print "<last> last !"
-        print "bye"
-
-    def accept_procedure(self, nid, name, block):
         (blocknid, procs, consts, vars, stmt) = block
-        self.visit(consts)
-        self.visit(vars)
+        self.visit_expressions([procs, consts, vars])
+        print ": run",
+        self.visit(stmt)
+        print ";"
+        print
+        print "( ------------------------------- )"
+        print "3 [ cr ] times"
+        print "run"
+
+
+
+    proc_path = []    # for nested procedure defs
+    proc_locs = {}    # map path to local names
+
+    # for recursion, we need to maintain a stack
+    def accept_procedure(self, nid, name, block):
+        self.proc_locs.setdefault(name, {})
+        (blocknid, procs, consts, vars, stmt) = block
+
+        print "{{"
+        self.visit_expressions([procs, consts, vars])
+        print "---reveal---"
         print ":", name,
         self.visit(stmt)
         print ";"
+        print "}}"
 
     def accept_call(self, nid, name):
-        print name,
 
+        # this detects simple recursion
+        #TODO: full recursion check
+        #TODO: tail call optimization
+        #TODO: only push/pop shadowed variables
+        recursive = name in self.proc_path
+
+        def call(): print name,
+
+        if recursive:
+            for ident in procvars:
+                print ident, "@"
+            call()
+            for ident in procvars:
+                print ident, "!"
+        else:
+            call()
 
 if __name__ == '__main__':
     code = sys.stdin.read()
