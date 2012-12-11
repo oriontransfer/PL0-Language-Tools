@@ -49,6 +49,8 @@ rel_ops = {
     'E'      : '=',
     'NE'     : '<>',
 }
+
+UNKNOWN, VAR, CONST, PROCEDURE = range(4)
 
 class RetroTranspiler(StackingNodeVisitor):
 
@@ -69,6 +71,25 @@ class RetroTranspiler(StackingNodeVisitor):
         # literal by -1.
         self.negate = False
         self.name_op = "@"
+        self.proc_path = []    # for nested procedure defs
+        self.local_defs = {}   # symbol table for top level / current proc
+        self.scope = []        # list of symbol tables for lexical scoping
+
+    def local_vars(self):
+        """
+        returns a list of names of variables to preserve
+        when calling functions recursively
+        """
+        return [ key for (key, (kind, _)) in self.local_defs.items()
+                 if kind == VAR ]
+
+    def lookup(self, name):
+        result = (UNKNOWN, None)
+        for frame in reversed( self.scope ):
+            if name in frame :
+                result = frame[ name ]
+                break
+        return result
 
     def visit( self, node ):
         """like visit_node but works with generators"""
@@ -136,13 +157,16 @@ class RetroTranspiler(StackingNodeVisitor):
     #-- named constants ----------------
 
     def accept_define(self, nid, name, value):
-        print value,
-        #TODO: print "constant",
-        print "variable:"
-        print name
+        self.local_defs[ name ] = (CONST, value)
 
     def accept_name(self, nid, name):
-        print name, self.name_op,
+        category, value = self.lookup( name )
+        if category == CONST:
+            print name, value
+        elif category == VAR:
+            print value, self.name_op,
+        else:
+            raise Exception("unhandled name: %s" % [[category, value]])
 
 
     #-- named variables & assignment ---
@@ -150,6 +174,7 @@ class RetroTranspiler(StackingNodeVisitor):
     def accept_variables(self, nid, *names):
         print "variables|",
         for nid, name in names:
+            self.local_defs[ name ] = (VAR, name)
             print name,
         print "|"
 
@@ -221,20 +246,13 @@ class RetroTranspiler(StackingNodeVisitor):
         print "run"
 
 
-    proc_path = []    # for nested procedure defs
-    proc_defs = {}    # map '/'.join(proc_path) to local defs
-    local_defs = {}   # symbol table for top level or current procedure
-    scope = []        # list of symbol tables for lexical scoping
-
-    def locals(self):
-        return [ 'bit' ]
-
-
     # for recursion, we need to maintain a stack
     def accept_procedure(self, nid, name, block):
 
         (blocknid, procs, consts, vars, stmt) = block
         self.proc_path.append(name)
+        self.scope.append(self.local_defs)
+        local_defs = {}
 
         has_locals = ( procs or consts or vars )
         if has_locals:
@@ -259,16 +277,17 @@ class RetroTranspiler(StackingNodeVisitor):
 
         def call(): print name,
 
+        keep = self.local_vars()
+
         if recursive:
-            print
-            print "( -- preserve state -- )"
-            for ident in self.locals():
+            #print "( -- preserve state -- )"
+            for ident in keep:
                 print ident, "@"
-            print "( -- recurse -- )"
+            #print "( -- recurse -- )"
             call()
             print
-            print "( -- restore state -- )"
-            for ident in reversed( self.locals()):
+            #print "( -- restore state -- )"
+            for ident in reversed( keep ):
                 print ident, "!"
         else:
             call()
