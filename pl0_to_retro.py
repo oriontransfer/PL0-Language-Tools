@@ -191,12 +191,11 @@ class RetroTranspiler(StackingNodeVisitor):
         #
         # which in functional-style retro is:
         #
-        #    [ <cond> ] [ [ <stmt> <cond> ] while ] ifTrue
+        #    <cond> [ [ <stmt> <cond> ] while ] ifTrue
         #
         # TODO: lower level/faster WHILE implementation
-        print "[ ",
         self.visit( cond )
-        print "] [ [",
+        print "[ [",
         self.visit( stmt )
         self.visit( cond )
         print "] while ] ifTrue",
