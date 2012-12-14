@@ -38,7 +38,11 @@ for f in tests/*.pl0 ; do
 done
 
 ## show the consolidated error report:
-less err.txt
+size=$(du err.txt | awk '{print $1}');
+if [ $size == 0 ];
+  then rm err.txt
+  else less err.txt ;
+fi;
 
 ## show changes in the generated output:
 git diff --color --word-diff ./expect
