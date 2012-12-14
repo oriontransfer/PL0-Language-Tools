@@ -1,0 +1,22 @@
+( -- runtime library ------------ )
+: odd? ( n - f ) 2 mod 1 = ;
+( -- main code ------------------ )
+variables| number cursor |
+{{
+variables| bit |
+---reveal---
+: helper 0 bit ! number @ odd? [ 1 bit ! ] ifTrue
+number @ 2 / number ! cursor @ 0 >
+[ cursor @ 1 - cursor ! bit @
+helper
+bit !
+] ifTrue
+bit @ putn cr ;
+}}
+: binary 4
+cursor ! helper ;
+: run ( - ) 5 number ! binary ;
+
+( ------------------------------- )
+3 [ cr ] times
+run

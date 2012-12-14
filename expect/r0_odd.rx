@@ -1,0 +1,19 @@
+( -- runtime library ------------ )
+: odd? ( n - f ) 2 mod 1 = ;
+( -- main code ------------------ )
+: run ( - ) -5 odd? [ -5 putn cr ] ifTrue
+-4 odd? [ -4 putn cr ] ifTrue
+-3 odd? [ -3 putn cr ] ifTrue
+-2 odd? [ -2 putn cr ] ifTrue
+-1 odd? [ -1 putn cr ] ifTrue
+0 odd? [ 0 putn cr ] ifTrue
+1 odd? [ 1 putn cr ] ifTrue
+2 odd? [ 2 putn cr ] ifTrue
+3 odd? [ 3 putn cr ] ifTrue
+4 odd? [ 4 putn cr ] ifTrue
+5 odd? [ 5 putn cr ] ifTrue
+;
+
+( ------------------------------- )
+3 [ cr ] times
+run
