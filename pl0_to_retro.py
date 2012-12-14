@@ -51,6 +51,8 @@ rel_ops = {
 }
 
 UNKNOWN, VAR, CONST, PROCEDURE = range(4)
+CATEGORY = "UNKNOWN VAR CONST PROCEDURE".split()
+
 
 class RetroTranspiler(StackingNodeVisitor):
 
@@ -73,7 +75,8 @@ class RetroTranspiler(StackingNodeVisitor):
         self.name_op = "@"
         self.proc_path = []    # for nested procedure defs
         self.local_defs = {}   # symbol table for top level / current proc
-        self.scope = []        # list of symbol tables for lexical scoping
+        self.scope = []        # list of symbol tables for lexical scope
+        self.scope.append(self.local_defs)
 
     def local_vars(self):
         """
@@ -84,12 +87,13 @@ class RetroTranspiler(StackingNodeVisitor):
                  if kind == VAR ]
 
     def lookup(self, name):
-        result = (UNKNOWN, None)
         for frame in reversed( self.scope ):
             if name in frame :
-                result = frame[ name ]
-                break
-        return result
+                return frame[ name ]
+            else: pass
+        else: raise LookupError( "name not found: %s. scope is %r"
+                                 % ( name, self.scope ))
+
 
     def visit( self, node ):
         """like visit_node but works with generators"""
@@ -166,7 +170,9 @@ class RetroTranspiler(StackingNodeVisitor):
         elif category == VAR:
             print value, self.name_op,
         else:
-            raise Exception("unhandled name: %s" % [[category, value]])
+            raise Exception("unhandled name: (%s:%s) . scope is: %r"
+                            % [CATEGORY[category], value,
+                               self.scope])
 
 
     #-- named variables & assignment ---
@@ -251,8 +257,8 @@ class RetroTranspiler(StackingNodeVisitor):
 
         (blocknid, procs, consts, vars, stmt) = block
         self.proc_path.append(name)
+        self.local_defs = {}
         self.scope.append(self.local_defs)
-        local_defs = {}
 
         has_locals = ( procs or consts or vars )
         if has_locals:
@@ -265,7 +271,10 @@ class RetroTranspiler(StackingNodeVisitor):
         print ";"
         if has_locals:
             print "}}"
+
         self.proc_path.pop()
+        self.scope.pop()
+        self.local_defs = self.scope[-1]
 
     def accept_call(self, nid, name):
 
