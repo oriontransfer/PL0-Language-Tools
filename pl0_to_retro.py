@@ -166,7 +166,7 @@ class RetroTranspiler(StackingNodeVisitor):
     def accept_name(self, nid, name):
         category, value = self.lookup( name )
         if category == CONST:
-            print name, value
+            print value
         elif category == VAR:
             print value, self.name_op,
         else:
