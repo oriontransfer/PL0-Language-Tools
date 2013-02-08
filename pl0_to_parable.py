@@ -24,7 +24,7 @@
 
 """
 This translates the pl0 syntax tree to the equivalent
-representation in retroforth ( http://retroforth.org/ )
+representation in parable ( http://forthworks.com/parable )
 """
 from pl0_node_visitor import StackingNodeVisitor
 import sys
@@ -33,7 +33,7 @@ import StringIO
 import os
 import types
 
-# AST->retro translator for operators
+# AST->parable translator for operators
 ops = {
     'DIVIDE' : '/ floor',   # integer div
     'MODULO' : '%',
@@ -206,28 +206,12 @@ class RetroTranspiler(StackingNodeVisitor):
         sys.stdout.write(' ' + rel_ops[ rel ] + ' ')
 
     def accept_if(self, nid, cond, stmt):
-        # retro's quotations ([..]) are high level functional constructs.
-        # they are nice, but incur a small extra runtime overhead.
-        # TODO: go back and use plain old jumps for speed
         self.visit( cond )
         sys.stdout.write(" [ ")
         self.visit( stmt )
         sys.stdout.write(" ] ifTrue ")
 
     def accept_while(self, nid, cond, stmt):
-        # retro actually doesn't have a standard "loop
-        # with the test at the start". the "while" word
-        # it offers is more like "repeat <stmt> until not <cond>"
-        # so we'll use quotations for now.
-        # essentially, we're saying:
-        #
-        #    IF <cond> THEN REPEAT <stmt> UNTIL NOT <cond>;
-        #
-        # which in functional-style retro is:
-        #
-        #    <cond> [ [ <stmt> <cond> ] while ] ifTrue
-        #
-        # TODO: lower level/faster WHILE implementation
         self.visit( cond )
         print " [ [",
         self.visit( stmt )
@@ -245,7 +229,6 @@ class RetroTranspiler(StackingNodeVisitor):
         sys.stdout.write("[ ")
         self.visit(stmt)
         sys.stdout.write(" ] 'run' define\n")
-
         print "run\npl0.display"
 
 
@@ -256,7 +239,7 @@ class RetroTranspiler(StackingNodeVisitor):
         self.proc_path.append(name)
         self.scope.append(self.local_defs)
 
-        # hack to enable recursion
+        # enable recursion
         sys.stdout.write(" [ ] '" + name + "' define\n")
 
         self.visit_expressions([procs, consts, vars])
