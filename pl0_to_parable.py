@@ -118,7 +118,7 @@ class RetroTranspiler(StackingNodeVisitor):
     # results of running the code.
     def accept_print(self, nid, expr):
         self.visit( expr )
-        print 'slice.store/advance',
+        print 'slice-store',
 
     #-- expressions --------------------
 
@@ -224,7 +224,7 @@ class RetroTranspiler(StackingNodeVisitor):
     def accept_program(self, nid, block):
 
         (blocknid, procs, consts, vars, stmt) = block
-        sys.stdout.write("'pl0.out' variable\n&pl0.out slice.set\n[ &slice.OFFSET @ [ slice.fetch/retreat ] timesRepeat ] 'pl0.display' define\n")
+        sys.stdout.write("'pl0.out' variable\n&pl0.out slice-set\n[ &*slice-offset* @ [ slice-fetch-retreat ] times ] 'pl0.display' define\n")
         self.visit_expressions([procs, consts, vars])
         sys.stdout.write("[ ")
         self.visit(stmt)
