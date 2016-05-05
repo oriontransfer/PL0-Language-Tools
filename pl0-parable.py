@@ -193,7 +193,8 @@ class ParableTranspiler(StackingNodeVisitor):
         for nid, name in names:
             print "'" + prefix + name + "' ",
             self.local_defs[ name ] = (VAR, name)
-        print '] ::\n'
+        print '] ::'
+        if prefix == "": sys.stdout.write('\n')
 
     def accept_set(self, nid, name, expr):
         self.visit( expr )
@@ -232,11 +233,14 @@ class ParableTranspiler(StackingNodeVisitor):
     def accept_program(self, nid, block):
 
         (blocknid, procs, consts, vars, stmt) = block
-        sys.stdout.write("request-empty '*Output' var!\n[ &*Output push ] 'PL/0.display' :\n")
+        print "'*Output' var"
+        print "[ &*Output push ] 'PL/0.display' :"
+        print '"----------------------------------------------------------------"'
         self.visit_expressions([procs, consts, vars])
-        sys.stdout.write("[ ")
+        sys.stdout.write("\n[ ")
         self.visit(stmt)
         sys.stdout.write(" ] 'run' :\n")
+        print '"----------------------------------------------------------------"'
         print "run\n*Output"
 
 
@@ -248,7 +252,7 @@ class ParableTranspiler(StackingNodeVisitor):
         self.scope.append(self.local_defs)
 
         # enable recursion
-        sys.stdout.write(" [ ] '" + name + "' :\n")
+        sys.stdout.write("[ ] '" + name + "' :\n")
 
         self.visit_expressions([procs, consts, vars])
         sys.stdout.write("[ ")
