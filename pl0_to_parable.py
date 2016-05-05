@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Copyright (c) 2012 Michal J Wallace. <http://www.michaljwallace.com/>
-# Copyright (c) 2012 Charles R Childers
+# Copyright (c) 2012, 2016 Charles R Childers
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -36,19 +36,19 @@ import types
 # AST->parable translator for operators
 ops = {
     'DIVIDE' : '/ floor',   # integer div
-    'MODULO' : '%',
+    'MODULO' : 'rem',
     'TIMES'  : '*',
     'PLUS'   : '+',
     'MINUS'  : '-',
 }
 
 rel_ops = {
-    'LT'     : '<',
-    'LTE'    : '<=',
-    'GT'     : '>',
-    'GTE'    : '>=',
-    'E'      : '==',
-    'NE'     : '!=',
+    'LT'     : 'lt?',
+    'LTE'    : 'lteq?',
+    'GT'     : 'gt?',
+    'GTE'    : 'gteq?',
+    'E'      : 'eq?',
+    'NE'     : '-eq?',
 }
 
 UNKNOWN, VAR, CONST, PROCEDURE = range(4)
@@ -169,10 +169,9 @@ class RetroTranspiler(StackingNodeVisitor):
         if category == CONST:
             sys.stdout.write(" #{0} ".format(value))
         elif category == VAR:
-            sys.stdout.write(' &')
-            sys.stdout.write(value)
             sys.stdout.write(' ')
             sys.stdout.write(self.name_op)
+            sys.stdout.write(value)
             sys.stdout.write(' ')
         else:
             raise Exception("unhandled name: (%s:%s) . scope is: %r"
@@ -183,9 +182,11 @@ class RetroTranspiler(StackingNodeVisitor):
     #-- named variables & assignment ---
 
     def accept_variables(self, nid, *names):
+        sys.stdout.write('[ ')
         for nid, name in names:
-            print "'" + name + "' variable\n",
+            print "'" + name + "' ",
             self.local_defs[ name ] = (VAR, name)
+        print '] ::\n'
 
     def accept_set(self, nid, name, expr):
         self.visit( expr )
@@ -198,7 +199,7 @@ class RetroTranspiler(StackingNodeVisitor):
 
     def accept_odd(self, nid, expr):
         self.visit( expr )
-        print "number.odd?",
+        print "odd?",
 
     def accept_condition(self, nid, lhs, rel, rhs):
         self.visit( lhs )
@@ -224,11 +225,11 @@ class RetroTranspiler(StackingNodeVisitor):
     def accept_program(self, nid, block):
 
         (blocknid, procs, consts, vars, stmt) = block
-        sys.stdout.write("'pl0.out' variable\n&pl0.out slice-set\n[ &*slice-offset* @ [ slice-fetch-retreat ] times ] 'pl0.display' define\n")
+        sys.stdout.write("'pl0.out' var\n&pl0.out slice-set\n[ &*slice-offset* @ [ slice-fetch-retreat ] times ] 'pl0.display' :\n")
         self.visit_expressions([procs, consts, vars])
         sys.stdout.write("[ ")
         self.visit(stmt)
-        sys.stdout.write(" ] 'run' define\n")
+        sys.stdout.write(" ] 'run' :\n")
         print "run\npl0.display"
 
 
@@ -240,12 +241,12 @@ class RetroTranspiler(StackingNodeVisitor):
         self.scope.append(self.local_defs)
 
         # enable recursion
-        sys.stdout.write(" [ ] '" + name + "' define\n")
+        sys.stdout.write(" [ ] '" + name + "' :\n")
 
         self.visit_expressions([procs, consts, vars])
         sys.stdout.write("[ ")
         self.visit(stmt)
-        sys.stdout.write(" ] '" + name + "' define\n")
+        sys.stdout.write(" ] '" + name + "' :\n")
         self.proc_path.pop()
         self.scope.pop()
         self.local_defs = self.scope[-1]
@@ -264,10 +265,10 @@ class RetroTranspiler(StackingNodeVisitor):
 
         if recursive:
             for ident in keep:
-                 sys.stdout.write(' &' + ident + ' @ ')
+                 sys.stdout.write(' @' + ident)
             call()
             for ident in reversed( keep ):
-                 sys.stdout.write(' &' + ident + ' ! ')
+                 sys.stdout.write(' !' + ident)
         else:
             call()
 
