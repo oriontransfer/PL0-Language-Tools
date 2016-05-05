@@ -264,11 +264,14 @@ class ParableTranspiler(StackingNodeVisitor):
         keep = self.local_vars()
 
         if recursive:
+            sys.stdout.write(' [ ')
             for ident in keep:
-                 sys.stdout.write(' @' + ident)
+                 sys.stdout.write(' &' + ident)
+            sys.stdout.write(' ] [ ')
             call()
-            for ident in reversed( keep ):
-                 sys.stdout.write(' !' + ident)
+            sys.stdout.write(' ] invoke<preserving> ')
+#            for ident in reversed( keep ):
+#                 sys.stdout.write(' !' + ident)
         else:
             call()
 
