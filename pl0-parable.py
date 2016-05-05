@@ -171,7 +171,10 @@ class ParableTranspiler(StackingNodeVisitor):
         elif category == VAR:
             sys.stdout.write(' ')
             sys.stdout.write(self.name_op)
-            sys.stdout.write(value)
+            if len(self.scope) > 1:
+                sys.stdout.write("~" + value)
+            else:
+                sys.stdout.write(value)
             sys.stdout.write(' ')
         else:
             raise Exception("unhandled name: (%s:%s) . scope is: %r"
@@ -182,9 +185,13 @@ class ParableTranspiler(StackingNodeVisitor):
     #-- named variables & assignment ---
 
     def accept_variables(self, nid, *names):
+        if len(self.scope) > 1:
+            prefix = "~"
+        else:
+            prefix = ""
         sys.stdout.write('[ ')
         for nid, name in names:
-            print "'" + name + "' ",
+            print "'" + prefix + name + "' ",
             self.local_defs[ name ] = (VAR, name)
         print '] ::\n'
 
@@ -247,6 +254,13 @@ class ParableTranspiler(StackingNodeVisitor):
         sys.stdout.write("[ ")
         self.visit(stmt)
         sys.stdout.write(" ] '" + name + "' :\n")
+
+        if self.scope > 1:
+            sys.stdout.write('[ ')
+            for v in self.local_defs:
+                sys.stdout.write("'~" + v + "' ")
+            sys.stdout.write('] hide-words\n')
+
         self.proc_path.pop()
         self.scope.pop()
         self.local_defs = self.scope[-1]
