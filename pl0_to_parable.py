@@ -55,12 +55,12 @@ UNKNOWN, VAR, CONST, PROCEDURE = range(4)
 CATEGORY = "UNKNOWN VAR CONST PROCEDURE".split()
 
 
-class RetroTranspiler(StackingNodeVisitor):
+class ParableTranspiler(StackingNodeVisitor):
 
     stacksize = 256 # cells
 
     def __init__(self):
-        super(RetroTranspiler, self)
+        super(ParableTranspiler, self)
         # negative signs are not included in number tokens,
         # because a lexer cannot distinguish the "-1" in
         # the expression "x-1" from "-1" as a negative numer.
@@ -118,7 +118,7 @@ class RetroTranspiler(StackingNodeVisitor):
     # results of running the code.
     def accept_print(self, nid, expr):
         self.visit( expr )
-        print 'slice-store',
+        print 'PL/0.display',
 
     #-- expressions --------------------
 
@@ -210,14 +210,14 @@ class RetroTranspiler(StackingNodeVisitor):
         self.visit( cond )
         sys.stdout.write(" [ ")
         self.visit( stmt )
-        sys.stdout.write(" ] ifTrue ")
+        sys.stdout.write(" ] if-true ")
 
     def accept_while(self, nid, cond, stmt):
         self.visit( cond )
         print " [ [",
         self.visit( stmt )
         self.visit( cond )
-        print "] whileTrue ] ifTrue",
+        print "] while ] if-true",
 
 
     #-- procedures ---------------------
@@ -225,12 +225,12 @@ class RetroTranspiler(StackingNodeVisitor):
     def accept_program(self, nid, block):
 
         (blocknid, procs, consts, vars, stmt) = block
-        sys.stdout.write("'pl0.out' var\n&pl0.out slice-set\n[ &*slice-offset* @ [ slice-fetch-retreat ] times ] 'pl0.display' :\n")
+        sys.stdout.write("request-empty '*Output' var!\n[ &*Output push ] 'PL/0.display' :\n")
         self.visit_expressions([procs, consts, vars])
         sys.stdout.write("[ ")
         self.visit(stmt)
         sys.stdout.write(" ] 'run' :\n")
-        print "run\npl0.display"
+        print "run\n*Output"
 
 
     # for recursion, we need to maintain a stack
@@ -273,9 +273,15 @@ class RetroTranspiler(StackingNodeVisitor):
             call()
 
 if __name__ == '__main__':
-    code = sys.stdin.read()
-    parser = pl0_parser.Parser()
-    parser.input(code)
-    program = parser.p_program()
-    compiler = RetroTranspiler()
-    compiler.visit_node(program)
+    if len(sys.argv) < 2:
+        print 'PL/0 to Parable Transpiler'
+        print 'Usage:'
+        print '    ./pl0-parable.py input >output'
+    else:
+        code = open(sys.argv[1], 'r').read()
+        parser = pl0_parser.Parser()
+        parser.input(code)
+        program = parser.p_program()
+        compiler = ParableTranspiler()
+        compiler.visit_node(program)
+
