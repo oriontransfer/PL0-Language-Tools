@@ -89,17 +89,17 @@ class Block:
         self.procedures[name] = value
 
     def debug(self):
-        print "-- Stack Frame --"
-        print "Constants: " + `self.constants`
-        print "Variables: " + `self.variables`
-        print "Procedures: " + `self.procedures`
+        print("-- Stack Frame --")
+        print("Constants: " + repr(self.constants))
+        print("Variables: " + repr(self.variables))
+        print("Procedures: " + repr(self.procedures))
 
     def lookup(self, name):
-        if self.constants.has_key(name):
+        if name in self.constants:
             return ('CONSTANT', self.constants[name],)
-        elif self.variables.has_key(name):
+        elif name in self.variables:
             return ('VARIABLE', self.variables[name],)
-        elif self.procedures.has_key(name):
+        elif name in self.procedures:
             return ('PROCEDURE', self.procedures[name],)
         else:
             return (False, None,)
@@ -122,4 +122,4 @@ class StackingNodeVisitor(NodeVisitor):
             if defined:
                 return (defined, value, -x,)
 
-        raise NameError("Undefined name referenced: " + `name`)
+        raise NameError("Undefined name referenced: " + repr(name))

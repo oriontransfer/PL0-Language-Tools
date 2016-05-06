@@ -395,19 +395,19 @@ def is_flat(tree):
 
 def print_tree(tree, depth = 0):
     if is_flat(tree):
-        print "  " * depth + str(tree)
+        print("  " * depth + str(tree))
     elif type(tree) == list or type(tree) == tuple:
         print_tree(tree[0], depth)
         for val in tree[1:]:
             print_tree(val, depth+1)
     elif type(tree) == dict:
         for key, val in tree.items():
-            print "  " * depth + str(key)
+            print("  " * depth + str(key))
             print_tree(val, depth+1)
     elif tree == None:
         pass
     else:
-        print "  " * depth + str(tree)
+        print("  " * depth + str(tree))
 
 if __name__ == "__main__":
     p = Parser()
