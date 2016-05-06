@@ -1,5 +1,4 @@
-PL/0 Language Tools
-===================
+# PL/0 Language Tools
 
 * Author: Samuel G. D. Williams (<http://www.oriontransfer.co.nz>)
 * Copyright (C) 2012 Samuel G. D. Williams.
@@ -13,8 +12,7 @@ It is designed to be clear and concise at the expense of performance. It is easy
 
 For more details including documentation please visit <http://www.oriontransfer.co.nz/learn/pl0-language-tools>.
 
-Installation
-------------
+## Installation
 
 Install ply:
 
@@ -22,8 +20,7 @@ Install ply:
 
 Then, simply download the files `pl0_*.py` and run them.
 
-Basic Usage
------------
+## Basic Usage
 
 Here is a full example using the interpreter:
 
@@ -64,10 +61,13 @@ For more advanced usage, including documentation on individual components, pleas
 
 [2]: http://www.oriontransfer.co.nz/learn/pl0-language-tools
 
-License
--------
+## License
 
 Copyright (c) 2012 Samuel G. D. Williams. <http://www.oriontransfer.co.nz>
+
+Copyright (c) 2012 Michal J Wallace. <http://www.michaljwallace.com/>
+
+Copyright (c) 2012, 2016 Charles Childers <http://forthworks.com/>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
