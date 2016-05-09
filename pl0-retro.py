@@ -111,7 +111,7 @@ class Compiler(StackingNodeVisitor):
         print(": main ")
         self.visit_node(block[4])
         print(";")
-        print('main')
+        print('main bye')
 
     def accept_while(self, *node):
         top_label = self.intermediate_label("while_start")
@@ -210,7 +210,7 @@ class Compiler(StackingNodeVisitor):
 
     def accept_print(self, *node):
         self.visit_node(node[1])
-        print(" putn")
+        print(" putn space")
 #        print "\tPOP"
 
     def accept_number(self, *node):
