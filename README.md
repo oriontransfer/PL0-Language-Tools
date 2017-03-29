@@ -1,10 +1,5 @@
 # PL/0 Language Tools
 
-* Author: Samuel G. D. Williams (<http://www.oriontransfer.co.nz>)
-* Copyright (C) 2012 Samuel G. D. Williams.
-* Updates Copyright (C) 2016 Charles Childers
-* Released under the MIT license.
-
 The PL/0 Language Tools serve as an example of how to construct a
 compiler. The language 'PL/0' was originally introduced in the book
 "Algorithms + Data Structures = Programs", by Niklaus Wirth in 1975.
@@ -17,9 +12,6 @@ Each component can be executed independently and is typically between
 It is designed to be clear and concise at the expense of performance. It
 is easy to extend and modify, e.g. adding new syntax constructs or
 machine instructions.
-
-For more details including documentation please visit
-<http://www.oriontransfer.co.nz/learn/pl0-language-tools>.
 
 ## Updates
 
@@ -84,11 +76,9 @@ For more advanced usage, including documentation on individual components, pleas
 
 ## License
 
-Copyright (c) 2012 Samuel G. D. Williams. <http://www.oriontransfer.co.nz>
-
-Copyright (c) 2012 Michal J Wallace. <http://www.michaljwallace.com/>
-
-Copyright (c) 2012, 2016 Charles Childers <http://forthworks.com/>
+Copyright, 2012, by Samuel G. D. Williams. <http://www.codeotaku.com> 
+Copyright, 2012, by Michal J Wallace. <http://www.michaljwallace.com/> 
+Copyright, 2012, 2016, by Charles Childers <http://forthworks.com/>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
