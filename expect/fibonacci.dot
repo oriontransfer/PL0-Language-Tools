@@ -1,0 +1,62 @@
+
+digraph finite_state_machine {
+	rankdir=TB;
+	size="8,5"
+	node [shape=doublecircle,label="PROGRAM",color=green]; PROGRAM_0;
+	node [shape=circle,label="BLOCK",color=black]; PROGRAM_0 -> BLOCK_1;
+	node [shape=circle,label="CONSTANTS",color=black]; BLOCK_1 -> CONSTANTS_2;
+	node [shape=circle,label="K = 20",color=black]; CONSTANTS_2 -> DEFINE_3;
+	node [shape=circle,label="VARIABLES",color=black]; BLOCK_1 -> VARIABLES_4;
+	node [shape=square,label="m",color=blue]; VARIABLES_4 -> NAME_5;
+	node [shape=square,label="n",color=blue]; VARIABLES_4 -> NAME_6;
+	node [shape=square,label="k",color=blue]; VARIABLES_4 -> NAME_7;
+	node [shape=square,label="count",color=blue]; VARIABLES_4 -> NAME_8;
+	node [shape=circle,label="BEGIN",color=black]; BLOCK_1 -> BEGIN_9;
+	node [shape=circle,label="SET",color=black]; BEGIN_9 -> SET_10;
+	node [shape=square,label="m",color=blue]; SET_10 -> NAME_11;
+	node [shape=circle,label="EXPR",color=blue]; SET_10 -> EXPRESSION_12;
+	node [shape=square,label="1",color=blue]; EXPRESSION_12 -> NUMBER_13;
+	node [shape=circle,label="SET",color=black]; BEGIN_9 -> SET_14;
+	node [shape=square,label="n",color=blue]; SET_14 -> NAME_15;
+	node [shape=circle,label="EXPR",color=blue]; SET_14 -> EXPRESSION_16;
+	node [shape=square,label="1",color=blue]; EXPRESSION_16 -> NUMBER_17;
+	node [shape=circle,label="SET",color=black]; BEGIN_9 -> SET_18;
+	node [shape=square,label="k",color=blue]; SET_18 -> NAME_19;
+	node [shape=circle,label="EXPR",color=blue]; SET_18 -> EXPRESSION_20;
+	node [shape=square,label="1",color=blue]; EXPRESSION_20 -> NUMBER_21;
+	node [shape=circle,label="SET",color=black]; BEGIN_9 -> SET_22;
+	node [shape=square,label="count",color=blue]; SET_22 -> NAME_23;
+	node [shape=circle,label="EXPR",color=blue]; SET_22 -> EXPRESSION_24;
+	node [shape=square,label="0",color=blue]; EXPRESSION_24 -> NUMBER_25;
+	node [shape=circle,label="WHILE",color=black]; BEGIN_9 -> WHILE_26;
+	node [shape=diamond,label="LTE",color=orange]; WHILE_26 -> CONDITION_27;
+	node [shape=circle,label="EXPR",color=blue]; CONDITION_27 -> EXPRESSION_28;
+	node [shape=square,label="count",color=blue]; EXPRESSION_28 -> NAME_29;
+	node [shape=circle,label="EXPR",color=blue]; CONDITION_27 -> EXPRESSION_30;
+	node [shape=square,label="K",color=blue]; EXPRESSION_30 -> NAME_31;
+	node [shape=circle,label="BEGIN",color=black]; WHILE_26 -> BEGIN_32;
+	node [shape=circle,label="PRINT",color=black]; BEGIN_32 -> PRINT_33;
+	node [shape=circle,label="EXPR",color=blue]; PRINT_33 -> EXPRESSION_34;
+	node [shape=square,label="k",color=blue]; EXPRESSION_34 -> NAME_35;
+	node [shape=circle,label="SET",color=black]; BEGIN_32 -> SET_36;
+	node [shape=square,label="k",color=blue]; SET_36 -> NAME_37;
+	node [shape=circle,label="EXPR",color=blue]; SET_36 -> EXPRESSION_38;
+	node [shape=square,label="n",color=blue]; EXPRESSION_38 -> NAME_39;
+	node [shape=circle,label="SET",color=black]; BEGIN_32 -> SET_40;
+	node [shape=square,label="n",color=blue]; SET_40 -> NAME_41;
+	node [shape=circle,label="EXPR",color=blue]; SET_40 -> EXPRESSION_42;
+	node [shape=square,label="m",color=blue]; EXPRESSION_42 -> NAME_43;
+	node [shape=circle,label="PLUS",color=black]; EXPRESSION_42 -> PLUS_44;
+	node [shape=square,label="n",color=blue]; PLUS_44 -> NAME_45;
+	node [shape=circle,label="SET",color=black]; BEGIN_32 -> SET_46;
+	node [shape=square,label="m",color=blue]; SET_46 -> NAME_47;
+	node [shape=circle,label="EXPR",color=blue]; SET_46 -> EXPRESSION_48;
+	node [shape=square,label="k",color=blue]; EXPRESSION_48 -> NAME_49;
+	node [shape=circle,label="SET",color=black]; BEGIN_32 -> SET_50;
+	node [shape=square,label="count",color=blue]; SET_50 -> NAME_51;
+	node [shape=circle,label="EXPR",color=blue]; SET_50 -> EXPRESSION_52;
+	node [shape=square,label="count",color=blue]; EXPRESSION_52 -> NAME_53;
+	node [shape=circle,label="PLUS",color=black]; EXPRESSION_52 -> PLUS_54;
+	node [shape=square,label="1",color=blue]; PLUS_54 -> NUMBER_55;
+
+}

@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# reset expected files whatever's checked into git:
+rm -f expect/*
+git checkout -- expect
+rm -rf err.txt
+
+# check the original python parts for regression using the fibonacci example
+./pl0_compiler.py < examples/fibonacci.pl0 > expect/fibonacci.asm 2>err.txt
+./pl0_interpreter.py < examples/fibonacci.pl0 > expect/fibonacci.run 2>>err.txt
+
+# the graphviz output is messy so just ignore it. we'll test the .dot file only.
+./pl0_graphviz.py < examples/fibonacci.pl0 2>>/dev/null
+mv graph.dot expect/fibonacci.dot
+rm -f graph.pdf
+
+## retro tests ( should be easy to update for other backends )
+for f in tests/*.pl0 ; do
+
+  # strip the path and extension:
+  name=${f/tests\//} ; name=${name/\.pl0/} ;
+
+  # run the file through the retro compiler:
+  errpath=./$name.err
+  ./pl0_to_retro.py < $f > expect/$name.rx  2> $errpath
+
+  # delete empty error reports
+  # http://ayaz.wordpress.com/2008/02/05/bash-quickly-deleting-empty-files-in-a-directory/
+  size=$(du $errpath | awk '{print $1}');
+  if [ $size != 0 ]; then
+    { echo
+      echo "------------ $f -----------------"
+      echo
+      cat $errpath
+    } >> err.txt
+  fi;
+  rm -f $errpath ;
+done
+
+## show the consolidated error report:
+size=$(du err.txt | awk '{print $1}');
+if [ $size == 0 ];
+  then rm err.txt
+  else less err.txt ;
+fi;
+
+## show changes in the generated output:
+git diff --color --word-diff ./expect

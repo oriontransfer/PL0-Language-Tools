@@ -1,0 +1,45 @@
+# program to demonstrate recursion.
+# prints a 4-digit binary number
+
+const 
+  digits = 4;
+
+# no parametrs in this language, so we use globals
+var
+   number,  # the number to convert to binary
+   cursor;  # the current digit position ( moves high to low )
+
+procedure helper;
+  var bit;
+begin
+  # we'll use the built in "odd" operator to test the lowest
+  # bit, and then divide by two to discard it.
+  bit := 0;
+  if odd number then bit := 1;
+
+  number := number / 2;
+
+  # since we want to print the bits from highest to lowest,
+  # but we're starting with the lowest, we need to put the
+  # the recursive call in the middle.
+  if cursor > 0 then
+  begin
+    cursor := cursor - 1;
+    call helper
+  end;
+
+  # the above code recursively printed all the bits to our left
+  # so now we can print our bit and return:
+  ! bit
+end;
+
+procedure binary;
+begin
+  cursor := digits;
+  call helper
+end;
+
+begin
+  number := 5;  # binary :  0 1 0 1
+  call binary
+end.

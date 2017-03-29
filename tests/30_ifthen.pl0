@@ -1,0 +1,1 @@
+BEGIN IF 1 > 2 THEN ! 1; IF 1 <= 2 THEN ! 2 END.

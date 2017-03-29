@@ -1,0 +1,8 @@
+( -- runtime library ------------ )
+: odd? ( n - f ) 2 mod 1 = ;
+( -- main code ------------------ )
+: run ( - ) -1 putn cr 3 putn cr -0 putn cr 1 0 * -1 * putn cr ;
+
+( ------------------------------- )
+3 [ cr ] times
+run
