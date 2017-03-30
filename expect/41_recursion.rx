@@ -1,22 +1,40 @@
-( -- runtime library ------------ )
-: odd? ( n - f ) 2 mod 1 = ;
-( -- main code ------------------ )
-variables| number cursor |
-{{
-variables| bit |
----reveal---
-: helper 0 bit ! number @ odd? [ 1 bit ! ] ifTrue
-number @ 2 / number ! cursor @ 0 >
-[ cursor @ 1 - cursor ! bit @
-helper
-bit !
-] ifTrue
-bit @ putn cr ;
-}}
-: binary 4
-cursor ! helper ;
-: run ( - ) 5 number ! binary ;
-
-( ------------------------------- )
-3 [ cr ] times
-run
+variable t_var_number_1
+variable t_var_cursor_2
+( Procedure helper )
+variable t_var_bit_4
+ : t_proc_helper_3 
+ #0
+ !t_var_bit_4
+ @t_var_number_1
+ if 
+ #1
+ !t_var_bit_4
+ then
+ @t_var_number_1
+ #2
+ !t_var_number_1
+ @t_var_cursor_2
+ #0
+ >
+ if 
+ @t_var_cursor_2
+ #1
+ -
+ !t_var_cursor_2
+ ( call ) t_proc_helper_3
+ then
+ @t_var_bit_4
+ putn space
+;
+( Procedure binary )
+ : t_proc_binary_7 
+ 4
+ !t_var_cursor_2
+ ( call ) t_proc_helper_3
+;
+: main 
+ #5
+ !t_var_number_1
+ ( call ) t_proc_binary_7
+;
+main bye

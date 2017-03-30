@@ -1,9 +1,19 @@
-( -- runtime library ------------ )
-: odd? ( n - f ) 2 mod 1 = ;
-( -- main code ------------------ )
-variables| a b c |
-: run ( - ) 1 a ! 0 b ! -1 c ! a @ b @ + c @ + putn cr ;
-
-( ------------------------------- )
-3 [ cr ] times
-run
+variable t_var_a_1
+variable t_var_b_2
+variable t_var_c_3
+: main 
+ #1
+ !t_var_a_1
+ #0
+ !t_var_b_2
+ #1
+ -1 *
+ !t_var_c_3
+ @t_var_a_1
+ @t_var_b_2
+ +
+ @t_var_c_3
+ +
+ putn space
+;
+main bye

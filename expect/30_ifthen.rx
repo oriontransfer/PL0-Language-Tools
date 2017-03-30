@@ -1,12 +1,17 @@
-( -- runtime library ------------ )
-: odd? ( n - f ) 2 mod 1 = ;
-( -- main code ------------------ )
-: run ( - ) 1 2 >
-[ 1 putn cr ] ifTrue
-1 2 <=
-[ 2 putn cr ] ifTrue
+: main 
+ #1
+ #2
+ >
+ if 
+ #1
+ putn space
+ then
+ #1
+ #2
+ <=
+ if 
+ #2
+ putn space
+ then
 ;
-
-( ------------------------------- )
-3 [ cr ] times
-run
+main bye

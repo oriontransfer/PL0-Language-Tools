@@ -22,7 +22,7 @@ for f in tests/*.pl0 ; do
 
   # run the file through the retro compiler:
   errpath=./$name.err
-  ./pl0_to_retro.py < $f > expect/$name.rx  2> $errpath
+  ./pl0_retro11.py $f > expect/$name.rx  2> $errpath
 
   # delete empty error reports
   # http://ayaz.wordpress.com/2008/02/05/bash-quickly-deleting-empty-files-in-a-directory/

@@ -1,16 +1,26 @@
-( -- runtime library ------------ )
-: odd? ( n - f ) 2 mod 1 = ;
-( -- main code ------------------ )
-variables| i |
-{{
-variables| n |
----reveal---
-: square i @ n ! n @ n @ * putn cr ;
-}}
-: run ( - ) 0 i ! i @ 10 <
-[ [ i @ 1 + i ! square i @ 10 <
-] while ] ifTrue ;
-
-( ------------------------------- )
-3 [ cr ] times
-run
+variable t_var_i_1
+( Procedure square )
+variable t_var_n_3
+ : t_proc_square_2 
+ @t_var_i_1
+ !t_var_n_3
+ @t_var_n_3
+ @t_var_n_3
+ *
+ putn space
+;
+: main 
+ #0
+ !t_var_i_1
+[
+ @t_var_i_1
+ #1
+ +
+ !t_var_i_1
+ ( call ) t_proc_square_2
+ @t_var_i_1
+ #10
+ <
+] while
+;
+main bye
