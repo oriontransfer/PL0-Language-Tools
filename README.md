@@ -76,9 +76,9 @@ For more advanced usage, including documentation on individual components, pleas
 
 ## License
 
-Copyright, 2012, by Samuel G. D. Williams. <http://www.codeotaku.com> 
-Copyright, 2012, by Michal J Wallace. <http://www.michaljwallace.com/> 
-Copyright, 2012, 2016, by Charles Childers <http://forthworks.com/>
+Copyright, 2012, by Samuel G. D. Williams. <http://www.codeotaku.com>  
+Copyright, 2012, by Michal J Wallace. <http://www.michaljwallace.com/>  
+Copyright, 2012, 2016, by Charles Childers <http://forthworks.com/>  
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
