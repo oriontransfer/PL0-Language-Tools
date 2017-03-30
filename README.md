@@ -4,6 +4,8 @@ The PL/0 Language Tools serve as an example of how to construct a
 compiler. The language 'PL/0' was originally introduced in the book
 "Algorithms + Data Structures = Programs", by Niklaus Wirth in 1975.
 
+![Overview](Overview.png)
+
 This project includes a full stack of tools designed for educational
 purposes to learn about compilers, interpreters and virtual machines.
 Each component can be executed independently and is typically between
@@ -12,18 +14,6 @@ Each component can be executed independently and is typically between
 It is designed to be clear and concise at the expense of performance. It
 is easy to extend and modify, e.g. adding new syntax constructs or
 machine instructions.
-
-## Updates
-
-This branch of development adds several new compiler targets. I'm interested
-in the possibility of cross compiling PL/0 to other languages; most of my work
-on this targets this.
-
-The primary target at this point is [Parable](http://forthworks.com/parable),
-which is a stack oriented, concatenative language.
-
-It will eventually have target compilers for Retro and ANS FORTH as well.
-Other target compilers may be added in the future.
 
 ## Installation
 
@@ -70,9 +60,15 @@ If you want to see a abstract syntax tree of your program, use the pl0_graphviz.
 
 A sample graph is included in the `examples` directory.
 
-For more advanced usage, including documentation on individual components, please see the [online documentation][2].
+For more advanced usage, including documentation on individual components, please see the [online documentation](http://programming.dojo.net.nz/study/pl0-language-tools/index).
 
-[2]: http://www.oriontransfer.co.nz/learn/pl0-language-tools
+## Cross Compiling
+
+Recent development adds several new compiler targets. I'm interested in the possibility of cross compiling PL/0 to other languages; most of my work on this targets this.
+
+The primary target at this point is [Parable](http://forthworks.com/parable), which is a stack oriented, concatenative language.
+
+It will eventually have target compilers for Retro and ANS FORTH as well. Other target compilers may be added in the future.
 
 ## License
 
