@@ -46,3 +46,9 @@ fi;
 
 ## show changes in the generated output:
 git diff --color --word-diff ./expect
+
+size=$(git diff --color --word-diff ./expect | wc -c)
+if [ $size == 0 ];
+  then exit 0
+  else exit 1 ;
+fi;
