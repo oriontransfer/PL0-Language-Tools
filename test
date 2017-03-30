@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # reset expected files whatever's checked into git:
-rm -f expect/*
-git checkout -- expect
+rm -rf expect/* expect/retro11
+git checkout -- expect expect/retro11
 rm -rf err.txt
 
 # check the original python parts for regression using the fibonacci example
@@ -22,7 +22,7 @@ for f in tests/*.pl0 ; do
 
   # run the file through the retro compiler:
   errpath=./$name.err
-  ./pl0_retro11.py $f > expect/$name.rx  2> $errpath
+  ./pl0_retro11.py $f > expect/retro11/$name.rx  2> $errpath
 
   # delete empty error reports
   # http://ayaz.wordpress.com/2008/02/05/bash-quickly-deleting-empty-files-in-a-directory/
