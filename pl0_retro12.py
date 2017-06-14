@@ -55,7 +55,7 @@ class Compiler(StackingNodeVisitor):
 
     def intermediate_label(self, hint = ''):
         self.label_id += 1
-        return 't.' + hint + '.' + repr(self.label_id)
+        return 'PL0:' + hint + repr(self.label_id)
 
     def generate(self, node):
         self.push()
@@ -65,14 +65,13 @@ class Compiler(StackingNodeVisitor):
     def accept_variables(self, *node):
         for var in node[1:]:
             # Generate a unique name for the variable
-            variable_name = self.intermediate_label('var.' + var[1])
+            variable_name = self.intermediate_label('v:' + var[1])
 
             # Save the unique name for loading this variable in the future.
             self.stack[-1].update(var[1], variable_name)
 
             # Allocate static storage space for the variable
             print("'" + variable_name + " var")
-#            print "    0"
 
     def accept_constants(self, *node):
         for var in node[1:]:
@@ -81,7 +80,7 @@ class Compiler(StackingNodeVisitor):
     def accept_procedures(self, *node):
         for proc in node[1:]:
             # Generate a unique name for the procedure
-            proc_name = self.intermediate_label('proc_' + proc[1])
+            proc_name = self.intermediate_label('p:' + proc[1])
 
             # Save the unique procedure name on the lexical stack
             self.stack[-1].declare(proc[1], proc_name)
@@ -94,21 +93,18 @@ class Compiler(StackingNodeVisitor):
             self.visit_expressions(proc[2][1:3])
 
             # Generate the code for the procedure
-            print(':' +  proc_name + ' ')
+            print(':' +  proc_name + '\n', end='')
             self.visit_node(proc[2][4])
-            print(";")
+            print(";\n")
 
             # Finished with lexical scope
             self.pop()
 
     def accept_program(self, *node):
-#        print "JMP main"
-#        print("'Output' var\no&Output pop drop")
-
         block = node[1]
         self.visit_expressions(block[1:4])
 
-        print(":main ")
+        print(":main\n", end='')
         self.visit_node(block[4])
         print(";")
         print('main')
@@ -120,18 +116,12 @@ class Compiler(StackingNodeVisitor):
         condition = node[1]
         loop = node[2]
 
-        print("[")
-#        print top_label + ":"
-        # Result of condition is on top of stack
-
-#        print "\tJE " + bottom_label
+        print('[ ', end='')
 
         self.visit_node(loop)
 
-#        print "\tJMP " + top_label
-#        print bottom_label + ":"
         self.visit_node(condition)
-        print("] while")
+        print('] while ', end='')
 
 
     def accept_if(self, *node):
@@ -141,12 +131,11 @@ class Compiler(StackingNodeVisitor):
         body = node[2]
 
         self.visit_node(condition)
-        print(" [ ")
-#        print "\tJE " + false_label
+        print('[ ', end='')
 
         self.visit_node(body)
 
-        print(" ] if")
+        print('] if ', end='')
 
 #        print false_label + ":"
 
@@ -159,7 +148,7 @@ class Compiler(StackingNodeVisitor):
         self.visit_node(rhs)
 
 #        print "\tCMP" + operator
-        print(" " + rel_ops[operator])
+        print(rel_ops[operator] + ' ', end='')
 
     def accept_set(self, *node):
         name = node[1][1]
@@ -172,7 +161,7 @@ class Compiler(StackingNodeVisitor):
         if defined != 'VARIABLE':
             raise NameError("Invalid assignment to non-variable " + assign_to + " of type " + defined)
 
-        print(" !" + str(value))
+        print('!' + str(value) + ' ', end='')
 
     def accept_call(self, *node):
         defined, value, level = self.find(node[1])
@@ -180,7 +169,7 @@ class Compiler(StackingNodeVisitor):
         if defined != 'PROCEDURE':
             raise NameError("Expecting procedure but got: " + defined)
 
-        print(" (call) " + value)
+        print(value + ' ', end='')
 
     def accept_term(self, *node):
         self.visit_node(node[1])
@@ -189,9 +178,9 @@ class Compiler(StackingNodeVisitor):
             self.visit_node(term[1])
 
             if term[0] == 'TIMES':
-                print(" *")
+                print('* ', end='')
             elif term[0] == 'DIVIDES':
-                print(" / floor")
+                print('/ ', end='')
 
     def accept_expression(self, *node):
         # Result of this expression will be on the top of stack
@@ -201,28 +190,28 @@ class Compiler(StackingNodeVisitor):
             self.visit_node(term[1])
 
             if term[0] == 'PLUS':
-                print(" +")
+                print('+ ', end='')
             elif term[0] == 'MINUS':
-                print(" -")
+                print('- ', end='')
 
         if node[1] == 'MINUS':
-            print(" -1 *")
+            print('n:negate ', end='')
 
     def accept_print(self, *node):
         self.visit_node(node[1])
-        print(" putn nl")
+        print('putn nl ', end='')
 #        print "\tPOP"
 
     def accept_number(self, *node):
-        print(" #" + repr(node[1]))
+        print('#' + repr(node[1]) + ' ', end='')
 
     def accept_name(self, *node):
         defined, value, level = self.find(node[1])
 
         if defined == 'VARIABLE':
-            print(" @" + value)
+            print('@' + value + ' ', end='')
         elif defined == 'CONSTANT':
-            print(" #" + str(value))
+            print('(a) #' + str(value) + ' (b) ', end='')
         else:
             raise NameError("Invalid value name " + node[1] + " of type " + defined)
 
