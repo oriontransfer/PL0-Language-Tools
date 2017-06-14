@@ -141,12 +141,12 @@ class Compiler(StackingNodeVisitor):
         body = node[2]
 
         self.visit_node(condition)
-        print(" if ")
+        print(" [ ")
 #        print "\tJE " + false_label
 
         self.visit_node(body)
 
-        print(" then")
+        print(" ] if")
 
 #        print false_label + ":"
 
