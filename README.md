@@ -66,15 +66,13 @@ For more advanced usage, including documentation on individual components, pleas
 
 Recent development adds several new compiler targets. I'm interested in the possibility of cross compiling PL/0 to other languages; most of my work on this targets this.
 
-The primary target at this point is [Parable](http://forthworks.com/parable), which is a stack oriented, concatenative language.
-
-It will eventually have target compilers for Retro and ANS FORTH as well. Other target compilers may be added in the future.
+I (Charles) am working on cross compilers for several stack based languages, including Retro, Parable, and ANS FORTH.
 
 ## License
 
 Copyright, 2012, by Samuel G. D. Williams. <http://www.codeotaku.com>  
 Copyright, 2012, by Michal J Wallace. <http://www.michaljwallace.com/>  
-Copyright, 2012, 2016, by Charles Childers <http://forthworks.com/>  
+Copyright, 2012, 2016, 2017 by Charles Childers <http://forthworks.com/>  
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
