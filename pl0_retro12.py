@@ -228,3 +228,4 @@ if __name__ == '__main__':
         program = parser.p_program()
         compiler = Compiler()
         compiler.generate(program)
+        print('````')
