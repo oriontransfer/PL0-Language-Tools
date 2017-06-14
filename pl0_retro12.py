@@ -94,7 +94,7 @@ class Compiler(StackingNodeVisitor):
             self.visit_expressions(proc[2][1:3])
 
             # Generate the code for the procedure
-            print(' :' +  proc_name + ' ')
+            print(':' +  proc_name + ' ')
             self.visit_node(proc[2][4])
             print(";")
 
@@ -172,7 +172,7 @@ class Compiler(StackingNodeVisitor):
         if defined != 'VARIABLE':
             raise NameError("Invalid assignment to non-variable " + assign_to + " of type " + defined)
 
-        print(" &" + str(value) + " store")
+        print(" !" + str(value))
 
     def accept_call(self, *node):
         defined, value, level = self.find(node[1])
@@ -220,7 +220,7 @@ class Compiler(StackingNodeVisitor):
         defined, value, level = self.find(node[1])
 
         if defined == 'VARIABLE':
-            print(" &" + value + " fetch")
+            print(" @" + value)
         elif defined == 'CONSTANT':
             print(" #" + str(value))
         else:
