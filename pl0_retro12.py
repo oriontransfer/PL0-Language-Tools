@@ -90,7 +90,7 @@ class Compiler(StackingNodeVisitor):
             self.push()
 
             # Generate any static storage required by the procedure
-            print("(Procedure_" + proc[1] + ")")
+            print("````\n\n# Procedure " + proc[1] + "\n\n````")
             self.visit_expressions(proc[2][1:3])
 
             # Generate the code for the procedure
@@ -210,7 +210,7 @@ class Compiler(StackingNodeVisitor):
 
     def accept_print(self, *node):
         self.visit_node(node[1])
-        print(" putn")
+        print(" putn nl")
 #        print "\tPOP"
 
     def accept_number(self, *node):
@@ -222,7 +222,7 @@ class Compiler(StackingNodeVisitor):
         if defined == 'VARIABLE':
             print(" &" + value + " fetch")
         elif defined == 'CONSTANT':
-            print(" " + str(value))
+            print(" #" + str(value))
         else:
             raise NameError("Invalid value name " + node[1] + " of type " + defined)
 
@@ -235,9 +235,7 @@ if __name__ == '__main__':
         code = open(sys.argv[1], 'r').read()
         parser = pl0_parser.Parser()
         parser.input(code)
-        print("(Support_Code)")
-        print(":lteq? dup-pair eq? [ lt? ] dip or ;")
-        print(":gteq? dup-pair eq? [ gt? ] dip or ;")
+        print("# Support_Code\n\n````")
         program = parser.p_program()
         compiler = Compiler()
         compiler.generate(program)
