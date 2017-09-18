@@ -109,6 +109,11 @@ class Compiler(StackingNodeVisitor):
         print(";")
         print('main')
 
+    def accept_odd(self, *node):
+        result = self.visit_node(node[1])
+        print('n:odd?')
+        return result
+
     def accept_while(self, *node):
         top_label = self.intermediate_label("while_start")
         bottom_label = self.intermediate_label("while_end")
