@@ -10,9 +10,8 @@ rm -rf err.txt
 ./pl0_interpreter.py < examples/fibonacci.pl0 > expect/fibonacci.run 2>>err.txt
 
 # the graphviz output is messy so just ignore it. we'll test the .dot file only.
-./pl0_graphviz.py < examples/fibonacci.pl0 2>>/dev/null
-mv graph.dot expect/fibonacci.dot
-rm -f graph.pdf
+./pl0_graphviz.py < examples/fibonacci.pl0
+(sleep 1; mv graph.dot expect/fibonacci.dot; rm -f graph.pdf) &
 
 ## retro tests ( should be easy to update for other backends )
 for f in tests/*.pl0 ; do

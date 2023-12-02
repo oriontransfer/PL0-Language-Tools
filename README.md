@@ -20,9 +20,12 @@ machine instructions.
 
 * The [ply](https://www.dabeaz.com/ply/) Python library is used for lexical analysis and parsing.
 
+Optional:
+* It is recommended to use the [xdot](https://github.com/jrfonseca/xdot.py#readme) program to view the abstract syntax tree. If `xdot` isn't available, the PDF viewer `evince` is used as a fallback.
+
 ### Fedora
 
-	dnf install -y python-ply
+	dnf install -y python-ply python-xdot evince
 
 ### Debian/Ubuntu
 
@@ -104,11 +107,14 @@ Example of using the compiler, assembler and virtual machine:
 	Stack: []
 	Offset: -1
 
-If you want to see a abstract syntax tree of your program, use the pl0_graphviz.py command:
+To see the result of lexical analysis and parsing:
 
-	./pl0_graphviz.py < examples/fibonacci.pl0
+	python pl0_lexer.py < examples/fibonacci.pl0
+	python pl0_parser.py < examples/fibonacci.pl0
 
-A sample graph is included in the `examples` directory.
+To get a graphical view of the abstract syntax tree:
+
+	python pl0_graphviz.py < examples/fibonacci.pl0
 
 For more advanced usage, including documentation on individual components, please see the [online documentation](http://programming.dojo.net.nz/study/pl0-language-tools/index).
 

@@ -163,11 +163,12 @@ if __name__ == '__main__':
     visitor = GraphPrinter()
     contents = visitor.generate_graph(program)
 
+    print("Generating Graph...")
     with open('graph.dot', 'w') as f:
         f.write(contents)
 
-    print("Generating Graph...")
-    os.system("dot -v -Tpdf -ograph.pdf graph.dot")
-
-    print("Opening Graph...")
-    os.system("open graph.pdf")
+    # To view, use 'xdot' if available, else the PDF viewer 'evince'.
+    if (os.system("xdot graph.dot") >> 8):
+        print("Generating PDF...")
+        os.system("dot -T pdf -o graph.pdf graph.dot")
+        os.system("evince graph.pdf")
