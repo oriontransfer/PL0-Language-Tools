@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Copyright (c) 2012 Samuel G. D. Williams. <http://www.oriontransfer.co.nz>
 #
@@ -24,7 +24,7 @@
 from pl0_node_visitor import *
 import sys
 import pl0_parser
-import StringIO
+import io
 import os
 
 GraphHeader = '''
@@ -53,7 +53,7 @@ class GraphPrinter(StackingNodeVisitor):
     def push(self, node):
         self.stack.append(node)
 
-        if not self.nodes.has_key(id(node)):
+        if id(node) not in self.nodes:
             self.nodes[id(node)] = "%s_%d" % (node[0], self.next,)
             self.next += 1
 
@@ -64,7 +64,7 @@ class GraphPrinter(StackingNodeVisitor):
         return self.nodes[id(parent)]
 
     def generate_graph(self, program):
-        self.buf = StringIO.StringIO()
+        self.buf = io.StringIO()
         self.buf.write(GraphHeader)
         self.accept_program(program)
         self.buf.write(GraphFooter)
@@ -166,8 +166,8 @@ if __name__ == '__main__':
     with open('graph.dot', 'w') as f:
         f.write(contents)
 
-    print "Generating Graph..."
+    print("Generating Graph...")
     os.system("dot -v -Tpdf -ograph.pdf graph.dot")
 
-    print "Opening Graph..."
+    print("Opening Graph...")
     os.system("open graph.pdf")

@@ -72,7 +72,7 @@ Here is a full example using the interpreter:
 	10946
 	-- Stack Frame --
 	Constants: {'K': 20}
-	Variables: {'count': 21, 'k': 17711, 'm': 17711, 'n': 28657}
+	Variables: {'m': 17711, 'n': 28657, 'k': 17711, 'count': 21}
 	Procedures: {}
 
 Example of using the compiler, assembler and virtual machine:

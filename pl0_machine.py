@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Copyright (c) 2012 Samuel G. D. Williams. <http://www.oriontransfer.co.nz>
 #
@@ -62,11 +62,11 @@ OPCODES = {
     'DEBUG': 51
 }
 
-NAMES = dict((v,k) for k, v in OPCODES.iteritems())
+NAMES = dict((v,k) for k, v in OPCODES.items())
 
 # Set global name for each opcode
 module = sys.modules[__name__]
-for name, value in OPCODES.iteritems():
+for name, value in OPCODES.items():
     setattr(module, name, value)
 
 class Machine:
@@ -249,17 +249,17 @@ class Machine:
 
     def instruction_print(self):
         self.offset += 1
-        print self.stack[-1]
+        print(self.stack[-1])
 
     def instruction_debug(self):
         self.offset += 1
         self.debug()
 
     def debug(self):
-        print "-- Machine State --"
-        print "Sequence: " + `self.sequence`
-        print "Stack: " + `self.stack`
-        print "Offset: " + `self.offset`
+        print("-- Machine State --")
+        print("Sequence: " + repr(self.sequence))
+        print("Stack: " + repr(self.stack))
+        print("Offset: " + repr(self.offset))
 
 if __name__ == '__main__':
     buffer = sys.stdin.read()

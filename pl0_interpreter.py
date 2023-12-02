@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Copyright (c) 2012 Samuel G. D. Williams. <http://www.oriontransfer.co.nz>
 #
@@ -23,7 +23,7 @@
 
 import os
 import sys
-import StringIO
+import io
 import pl0_parser
 from pl0_node_visitor import StackingNodeVisitor
 
@@ -153,7 +153,7 @@ class Interpreter(StackingNodeVisitor):
     def accept_print(self, *node):
         block, result = self.evaluate(node[1])
 
-        print `result`
+        print(repr(result))
 
 if __name__ == '__main__':
     code = sys.stdin.read()

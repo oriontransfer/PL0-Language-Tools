@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Copyright (c) 2012 Samuel G. D. Williams. <http://www.oriontransfer.co.nz>
 #
@@ -23,12 +23,12 @@
 
 import pl0_machine
 import sys
-import StringIO
+import io
 import re
 
-label_re = re.compile('\s*(.*?):')
-whitespace_re = re.compile('\s+')
-comment_re = re.compile('^\s*#.*$')
+label_re = re.compile(r'\s*(.*?):')
+whitespace_re = re.compile(r'\s+')
+comment_re = re.compile(r'^\s*#.*$')
 
 def is_integer(string):
     try:
@@ -59,7 +59,7 @@ def assemble(input):
             for argument in command:
                 if is_integer(argument):
                     buffer.append(int(argument))
-                elif pl0_machine.OPCODES.has_key(argument):
+                elif argument in pl0_machine.OPCODES:
                     buffer.append(pl0_machine.OPCODES[argument])
                 else:
                     # A label
@@ -70,4 +70,4 @@ def assemble(input):
 
 if __name__ == '__main__':
     code = assemble(sys.stdin)
-    print `code`
+    print(repr(code))
