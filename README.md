@@ -16,19 +16,39 @@ It is designed to be clear and concise at the expense of performance. It
 is easy to extend and modify, e.g. adding new syntax constructs or
 machine instructions.
 
-## Installation
+## Install dependencies
 
-Install ply:
+* The [ply](https://www.dabeaz.com/ply/) Python library is used for lexical analysis and parsing.
 
-	sudo easy_install ply
+### Fedora
 
-Then, simply download the files `pl0_*.py` and run them.
+	dnf install -y python-ply
+
+### Debian/Ubuntu
+
+	apt update && apt install -y python-is-python3 python3-ply
+
+### Unix-based
+
+Package names may be similar to the ones above.
+
+For macOS it is possible to use the [Homebrew](https://brew.sh/) installer.
+
+### Windows
+
+Open a Command Prompt (press Win + R, type `cmd`) and install Python.
+
+	winget install Python
+
+Use [pip](https://pip.pypa.io/) to install the ply library.
+
+	pip install ply
 
 ## Basic Usage
 
 Here is a full example using the interpreter:
 
-	$ ./pl0_interpreter.py < examples/fibonacci.pl0
+	$ python pl0_interpreter.py < examples/fibonacci.pl0
 	1
 	1
 	2
@@ -57,7 +77,7 @@ Here is a full example using the interpreter:
 
 Example of using the compiler, assembler and virtual machine:
 
-	$ ./pl0_compiler.py < examples/fibonacci.pl0 | ./pl0_assembler.py | ./pl0_machine.py
+	$ python pl0_compiler.py < examples/fibonacci.pl0 | python pl0_assembler.py | python pl0_machine.py
 	1
 	1
 	2
