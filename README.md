@@ -27,7 +27,7 @@ Then, simply download the files `pl0_*.py` and run them.
 
 Here is a full example using the interpreter:
 
-	$ ./pl0_interpreter.py < examples/fibonacci.pl1
+	$ ./pl0_interpreter.py < examples/fibonacci.pl0
 	1
 	1
 	2
@@ -56,7 +56,7 @@ Here is a full example using the interpreter:
 
 If you want to see a abstract syntax tree of your program, use the pl0_graphviz.py command:
 
-	./pl0_graphviz.py < examples/fibonacci.pl1
+	./pl0_graphviz.py < examples/fibonacci.pl0
 
 A sample graph is included in the `examples` directory.
 
