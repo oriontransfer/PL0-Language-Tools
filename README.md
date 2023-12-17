@@ -1,8 +1,9 @@
 # PL/0 Language Tools
 
 The PL/0 Language Tools serve as an example of how to construct a
-compiler. The language 'PL/0' was originally introduced in the book
-"Algorithms + Data Structures = Programs", by Niklaus Wirth in 1975.
+compiler. The language [PL/0](https://en.wikipedia.org/wiki/PL/0) was
+originally introduced in the book "Algorithms + Data Structures = Programs",
+by Niklaus Wirth in 1975.
 
 ![Overview](Overview.png)
 
@@ -15,19 +16,42 @@ It is designed to be clear and concise at the expense of performance. It
 is easy to extend and modify, e.g. adding new syntax constructs or
 machine instructions.
 
-## Installation
+## Install dependencies
 
-Install ply:
+* The [ply](https://www.dabeaz.com/ply/) Python library is used for lexical analysis and parsing.
 
-	sudo easy_install ply
+Optional:
+* It is recommended to use the [xdot](https://github.com/jrfonseca/xdot.py#readme) program to view the abstract syntax tree. If `xdot` isn't available, the PDF viewer `evince` is used as a fallback.
 
-Then, simply download the files `pl0_*.py` and run them.
+### Fedora
+
+	dnf install -y python-ply python-xdot evince
+
+### Debian/Ubuntu
+
+	apt update && apt install -y python-is-python3 python3-ply
+
+### Unix-based
+
+Package names may be similar to the ones above.
+
+For macOS it is possible to use the [Homebrew](https://brew.sh/) installer.
+
+### Windows
+
+Open a Command Prompt (press Win + R, type `cmd`) and install Python.
+
+	winget install Python
+
+Use [pip](https://pip.pypa.io/) to install the ply library.
+
+	pip install ply
 
 ## Basic Usage
 
 Here is a full example using the interpreter:
 
-	$ ./pl0_interpreter.py < examples/fibonacci.pl1
+	$ python pl0_interpreter.py < examples/fibonacci.pl0
 	1
 	1
 	2
@@ -51,14 +75,46 @@ Here is a full example using the interpreter:
 	10946
 	-- Stack Frame --
 	Constants: {'K': 20}
-	Variables: {'count': 21, 'k': 17711, 'm': 17711, 'n': 28657}
+	Variables: {'m': 17711, 'n': 28657, 'k': 17711, 'count': 21}
 	Procedures: {}
 
-If you want to see a abstract syntax tree of your program, use the pl0_graphviz.py command:
+Example of using the compiler, assembler and virtual machine:
 
-	./pl0_graphviz.py < examples/fibonacci.pl1
+	$ python pl0_compiler.py < examples/fibonacci.pl0 | python pl0_assembler.py | python pl0_machine.py
+	1
+	1
+	2
+	3
+	5
+	8
+	13
+	21
+	34
+	55
+	89
+	144
+	233
+	377
+	610
+	987
+	1597
+	2584
+	4181
+	6765
+	10946
+	-- Machine State --
+	Sequence: [16, 6, 17711, 28657, 17711, 21, 10, 1, 7, 2, 10, 1, 7, 3, 10, 1, 7, 4, 10, 0, 7, 5, 6, 5, 10, 20, 31, 22, 57, 6, 4, 50, 11, 6, 3, 7, 4, 6, 2, 6, 3, 45, 7, 3, 6, 4, 7, 2, 6, 5, 10, 1, 45, 7, 5, 16, 22, 1]
+	Stack: []
+	Offset: -1
 
-A sample graph is included in the `examples` directory.
+To see the result of lexical analysis and parsing:
+
+	python pl0_lexer.py < examples/fibonacci.pl0
+	python pl0_parser.py < examples/fibonacci.pl0
+
+To get a graphical view of the abstract syntax tree:
+
+	python pl0_graphviz.py < examples/fibonacci.pl0
 
 For more advanced usage, including documentation on individual components, please see the [online documentation](http://programming.dojo.net.nz/study/pl0-language-tools/index).
 

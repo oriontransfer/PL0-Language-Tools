@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Copyright (c) 2012 Michal J Wallace. <http://www.michaljwallace.com/>
 # Copyright (c) 2012 Charles R Childers
@@ -29,7 +29,7 @@ representation in retroforth ( http://retroforth.org/ )
 from pl0_node_visitor import StackingNodeVisitor
 import sys
 import pl0_parser
-import StringIO
+import io
 import os
 import types
 
@@ -51,7 +51,7 @@ rel_ops = {
     'NE'     : '<>',
 }
 
-UNKNOWN, VAR, CONST, PROCEDURE = range(4)
+UNKNOWN, VAR, CONST, PROCEDURE = list(range(4))
 CATEGORY = "UNKNOWN VAR CONST PROCEDURE".split()
 
 
@@ -84,7 +84,7 @@ class RetroTranspiler(StackingNodeVisitor):
         returns a list of names of variables to preserve
         when calling functions recursively
         """
-        return [ key for (key, (kind, _)) in self.local_defs.items()
+        return [ key for (key, (kind, _)) in list(self.local_defs.items())
                  if kind == VAR ]
 
     def lookup(self, name):
@@ -106,11 +106,11 @@ class RetroTranspiler(StackingNodeVisitor):
 
     def accept_number(self, nid, value):
         if self.negate:
-            print "-{0}".format(value),
+            print("-{0}".format(value), end=' ')
             self.negate = False
         else:
             sys.stdout.write(" ")
-            print value,
+            print(value, end=' ')
 
     # logically, print ("!") would come much later
     # but i'm putting these in implementation order,
@@ -118,7 +118,7 @@ class RetroTranspiler(StackingNodeVisitor):
     # results of running the code.
     def accept_print(self, nid, expr):
         self.visit( expr )
-        print ' . ',
+        print(' . ', end=' ')
 
     #-- expressions --------------------
 
@@ -131,7 +131,7 @@ class RetroTranspiler(StackingNodeVisitor):
         self.visit( factors.pop( 0 ))
         for operator, operand in factors:
             self.visit( operand )
-            print ops[ operator ],
+            print(ops[ operator ], end=' ')
 
     # expression = [ "+"|"-"] term { ("+"|"-") term}.
     def accept_expression(self, nid, sign, *terms_tup):
@@ -154,10 +154,10 @@ class RetroTranspiler(StackingNodeVisitor):
             else:
                 operator, term = node
                 self.visit( term )
-                print ops[ operator ],
+                print(ops[ operator ], end=' ')
 
         if negate_after:
-            print "-1 *",
+            print("-1 *", end=' ')
 
     #-- named constants ----------------
 
@@ -184,7 +184,7 @@ class RetroTranspiler(StackingNodeVisitor):
 
     def accept_variables(self, nid, *names):
         for nid, name in names:
-            print "variable " + name + "\n",
+            print("variable " + name + "\n", end=' ')
             self.local_defs[ name ] = (VAR, name)
 
     def accept_set(self, nid, name, expr):
@@ -198,7 +198,7 @@ class RetroTranspiler(StackingNodeVisitor):
 
     def accept_odd(self, nid, expr):
         self.visit( expr )
-        print "2 mod 1 =",
+        print("2 mod 1 =", end=' ')
 
     def accept_condition(self, nid, lhs, rel, rhs):
         self.visit( lhs )
@@ -228,11 +228,11 @@ class RetroTranspiler(StackingNodeVisitor):
         #    <cond> [ [ <stmt> <cond> ] while ] ifTrue
         #
         # TODO: lower level/faster WHILE implementation
-        print " begin ",
+        print(" begin ", end=' ')
         self.visit( cond )
-        print " while ",
+        print(" while ", end=' ')
         self.visit( stmt )
-        print " repeat ",
+        print(" repeat ", end=' ')
 
 
     #-- procedures ---------------------
@@ -245,7 +245,7 @@ class RetroTranspiler(StackingNodeVisitor):
         self.visit(stmt)
         sys.stdout.write(" ;\n")
 
-        print "run\n"
+        print("run\n")
 
 
     # for recursion, we need to maintain a stack
@@ -271,14 +271,14 @@ class RetroTranspiler(StackingNodeVisitor):
         #TODO: only push/pop shadowed variables
         recursive = name in self.proc_path
 
-        def call(): print name,
+        def call(): print(name, end=' ')
 
         keep = self.local_vars()
 
         if recursive:
             for ident in keep:
                  sys.stdout.write(ident + ' @ ')
-            print " recurse ",
+            print(" recurse ", end=' ')
             for ident in reversed( keep ):
                  sys.stdout.write(ident + ' ! ')
         else:
